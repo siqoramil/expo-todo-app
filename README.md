@@ -1,65 +1,154 @@
-# Welcome to your Expo app 👋
+# Todo App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Cross-platform vazifalarni boshqarish ilovasi — **Expo**, **React Native** va **TypeScript** asosida yaratilgan.
 
-## Get started
+iOS, Android va Web platformalarida ishlaydi.
 
-To start the app, in your terminal run:
+## Xususiyatlari
+
+- **Autentifikatsiya** — Ro'yxatdan o'tish va tizimga kirish (lokal saqlash)
+- **Vazifalar boshqaruvi** — Yaratish, bajarish, o'chirish, qidirish va filtrlash
+- **Kategoriyalar** — Shaxsiy, Ish, Xaridlar, Salomatlik, O'qish, Boshqa
+- **Ustuvorliklar** — Past, O'rta, Yuqori (rangli indikator bilan)
+- **Statistika** — Bajarilganlar foizi, kategoriya va ustuvorlik bo'yicha tahlil
+- **Mavzular** — Yorug', Qorong'i va Tizim rejimi
+- **Tillar** — O'zbek va Rus tillarida to'liq tarjima
+- **Animatsiyalar** — Reanimated orqali silliq 60fps animatsiyalar
+- **Haptic Feedback** — Tugma bosish va harakatlar uchun taktil javob
+
+## Texnologiyalar
+
+| Texnologiya | Versiya | Vazifasi |
+|---|---|---|
+| Expo | 54 | Framework va build tizimi |
+| React Native | 0.81 | Mobil UI |
+| React | 19 | UI kutubxona |
+| TypeScript | 5.9 | Tip xavfsizligi |
+| Expo Router | 6 | Fayl asosida navigatsiya |
+| Zustand | 5 | State boshqaruvi |
+| Reanimated | 4 | Animatsiyalar |
+| AsyncStorage | 2 | Lokal ma'lumotlar saqlash |
+
+## Loyiha tuzilishi
+
+```
+expo-project/
+├── app/                    # Expo Router sahifalari
+│   ├── (auth)/             # Autentifikatsiya ekranlari
+│   │   ├── login.tsx       # Kirish sahifasi
+│   │   └── register.tsx    # Ro'yxatdan o'tish
+│   ├── (tabs)/             # Asosiy tab navigatsiya
+│   │   ├── index.tsx       # Vazifalar ro'yxati
+│   │   ├── explore.tsx     # Statistika
+│   │   └── settings.tsx    # Sozlamalar va profil
+│   └── _layout.tsx         # Root layout
+├── components/             # Qayta ishlatiladigan komponentlar
+│   └── todo/               # Todo komponentlari
+│       ├── AddTodoModal.tsx
+│       ├── CategoryFilter.tsx
+│       ├── EmptyState.tsx
+│       └── TodoItem.tsx
+├── stores/                 # Zustand state management
+│   ├── useAppStore.ts      # Mavzu, til, profil
+│   ├── useAuthStore.ts     # Autentifikatsiya
+│   └── useTodoStore.ts     # Vazifalar CRUD
+├── i18n/                   # Tarjimalar (uz, ru)
+│   └── translations.ts
+├── hooks/                  # Custom React hooks
+├── constants/              # Ranglar va konstantalar
+├── types/                  # TypeScript tiplar
+└── assets/                 # Rasmlar va shriftlar
+```
+
+## Ekranlar
+
+### Autentifikatsiya
+- **Kirish** — Email va parol bilan tizimga kirish, gradient sarlavha
+- **Ro'yxatdan o'tish** — Yangi foydalanuvchi yaratish, validatsiya
+
+### Vazifalar (Bosh sahifa)
+- Salomlashish xabari va kunlik progress kartasi
+- Qidiruv va kategoriya bo'yicha filtrlash
+- Animatsiyali FlatList va Floating Action Button
+- Vazifalarni yaratish, bajarish va o'chirish
+
+### Statistika
+- Umumiy, bajarilgan va kutilayotgan vazifalar soni
+- Bajarilish foizi (vizual doira ko'rsatkich)
+- Kategoriya va ustuvorlik bo'yicha progress barlar
+- Motivatsion xabarlar
+
+### Profil va Sozlamalar
+- Avatar tanlash (galereyadan)
+- Ism, familiya, email tahrirlash
+- Mavzu tanlash (Yorug' / Qorong'i / Tizim)
+- Til o'zgartirish (O'zbek / Rus)
+- Tizimdan chiqish
+
+## Ishga tushirish
+
+### Talablar
+
+- [Node.js](https://nodejs.org/) (LTS versiya)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- iOS Simulator yoki Android Emulator (ixtiyoriy)
+
+### O'rnatish
 
 ```bash
+# Repozitoriyani klonlash
+git clone <repo-url>
+cd expo-project
+
+# Bog'liqliklarni o'rnatish
+npm install
+
+# Dasturni ishga tushirish
 npm run start
 ```
 
-In the output, you'll find options to open the app in:
+Ishga tushgandan keyin terminalda quyidagi variantlar chiqadi:
 
-- [a development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [an Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [an iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **a** — Android emulatorda ochish
+- **i** — iOS simulatorda ochish
+- **w** — Brauzerda ochish
+- **Expo Go** — QR kod skanerlash orqali telefondan ochish
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## EAS Workflows
 
-## Workflows
+Loyiha [EAS Workflows](https://docs.expo.dev/eas/workflows/get-started/) bilan avtomatlashtirilgan.
 
-This project is configured to use [EAS Workflows](https://docs.expo.dev/eas/workflows/get-started/) to automate some development and release processes. These commands are set up in [`package.json`](./package.json) and can be run using NPM scripts in your terminal.
+| Buyruq | Vazifasi |
+|---|---|
+| `npm run draft` | Preview update nashr qilish |
+| `npm run development-builds` | Development build yaratish |
+| `npm run deploy` | Production ga deploy qilish |
 
-### Previews
-
-Run `npm run draft` to [publish a preview update](https://docs.expo.dev/eas/workflows/examples/publish-preview-update/) of your project, which can be viewed in Expo Go or in a development build.
-
-### Development Builds
-
-Run `npm run development-builds` to [create a development build](https://docs.expo.dev/eas/workflows/examples/create-development-builds/). Note - you'll need to follow the [Prerequisites](https://docs.expo.dev/eas/workflows/examples/create-development-builds/#prerequisites) to ensure you have the correct emulator setup on your machine.
-
-### Production Deployments
-
-Run `npm run deploy` to [deploy to production](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/). Note - you'll need to follow the [Prerequisites](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/#prerequisites) to ensure you're set up to submit to the Apple and Google stores.
-
-## Hosting
-
-Expo offers hosting for websites and API functions via EAS Hosting. See the [Getting Started](https://docs.expo.dev/eas/hosting/get-started/) guide to learn more.
-
-
-## Get a fresh project
-
-When you're ready, run:
+## Build qilish
 
 ```bash
-npm run reset-project
+# iOS uchun
+npx eas-cli@latest build --platform ios
+
+# Android uchun
+npx eas-cli@latest build --platform android
+
+# Ikkalasi uchun
+npx eas-cli@latest build --platform all
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Loyiha arxitekturasi
 
-## Learn more
+- **Fayl asosida routing** — Expo Router orqali `app/` papkasida
+- **Zustand** — Yengil va samarali state management
+- **AsyncStorage** — Barcha ma'lumotlar lokal saqlanadi
+- **Reanimated** — 60fps animatsiyalar native threadda
+- **TypeScript Strict Mode** — To'liq tip xavfsizligi
+- **React 19** — Eng so'nggi React xususiyatlari
+- **Typed Routes** — Navigatsiya uchun tip xavfsizligi
 
-To learn more about developing your project with Expo, look at the following resources:
+## Muallif
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+**Ramil Developer**
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Bundle ID: `com.ramildeveloper.expoproject`
