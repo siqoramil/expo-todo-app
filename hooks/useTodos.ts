@@ -9,6 +9,7 @@ export function useTodos() {
   const loading = useTodoStore((s) => s.loading);
   const loadTodos = useTodoStore((s) => s.loadTodos);
   const addTodoAction = useTodoStore((s) => s.addTodo);
+  const editTodoAction = useTodoStore((s) => s.editTodo);
   const toggleTodoAction = useTodoStore((s) => s.toggleTodo);
   const deleteTodoAction = useTodoStore((s) => s.deleteTodo);
   const clearCompletedAction = useTodoStore((s) => s.clearCompleted);
@@ -25,6 +26,13 @@ export function useTodos() {
       await addTodoAction(user.id, title, category, priority);
     },
     [user, addTodoAction],
+  );
+
+  const editTodo = useCallback(
+    (id: string, title: string, category: Category, priority: Priority) => {
+      editTodoAction(id, title, category, priority);
+    },
+    [editTodoAction],
   );
 
   const toggleTodo = useCallback(
@@ -46,5 +54,5 @@ export function useTodos() {
     clearCompletedAction(user.id);
   }, [user, clearCompletedAction]);
 
-  return { todos, loading, addTodo, toggleTodo, deleteTodo, clearCompleted };
+  return { todos, loading, addTodo, editTodo, toggleTodo, deleteTodo, clearCompleted };
 }

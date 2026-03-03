@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { TranslationKey } from '@/i18n/translations';
 
 const AUTH_KEY = '@auth_user';
 
@@ -8,12 +9,14 @@ export interface LocalUser {
   email: string;
 }
 
+type TranslateFn = (key: TranslationKey) => string;
+
 interface AuthState {
   user: LocalUser | null;
   loading: boolean;
   initialized: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string, t: TranslateFn) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, t: TranslateFn) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   initialize: () => Promise<void>;
 }
@@ -36,18 +39,23 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: false,
   initialized: false,
 
-  signIn: async (email, password) => {
+  signIn: async (email, password, t) => {
+    if (!email.trim()) return { error: t('validationEmailRequired') };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return { error: t('validationEmailInvalid') };
+    if (!password) return { error: t('validationPasswordRequired') };
+    if (password.length < 6) return { error: t('validationPasswordMin') };
+
     set({ loading: true });
     try {
       const users = await getUsers();
       const userRecord = users[email.toLowerCase()];
       if (!userRecord) {
         set({ loading: false });
-        return { error: 'Foydalanuvchi topilmadi' };
+        return { error: t('userNotFound') };
       }
       if (userRecord.password !== password) {
         set({ loading: false });
-        return { error: "Parol noto'g'ri" };
+        return { error: t('wrongPassword') };
       }
       const localUser: LocalUser = { id: userRecord.id, email: userRecord.email };
       await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(localUser));
@@ -55,18 +63,23 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { error: null };
     } catch {
       set({ loading: false });
-      return { error: 'Kirish xatosi yuz berdi' };
+      return { error: t('signInError') };
     }
   },
 
-  signUp: async (email, password) => {
+  signUp: async (email, password, t) => {
+    if (!email.trim()) return { error: t('validationEmailRequired') };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return { error: t('validationEmailInvalid') };
+    if (!password) return { error: t('validationPasswordRequired') };
+    if (password.length < 6) return { error: t('validationPasswordMin') };
+
     set({ loading: true });
     try {
       const users = await getUsers();
       const key = email.toLowerCase();
       if (users[key]) {
         set({ loading: false });
-        return { error: "Bu email allaqachon ro'yxatdan o'tgan" };
+        return { error: t('emailAlreadyRegistered') };
       }
       const id = generateId();
       users[key] = { id, email, password };
@@ -77,7 +90,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { error: null };
     } catch {
       set({ loading: false });
-      return { error: "Ro'yxatdan o'tish xatosi yuz berdi" };
+      return { error: t('signUpError') };
     }
   },
 

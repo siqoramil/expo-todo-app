@@ -1,5 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedText } from '@/components/ThemedText';
 import { useAppStore, selectEffectiveTheme } from '@/stores/useAppStore';
@@ -10,37 +11,17 @@ export function EmptyState() {
   const isDark = effectiveTheme === 'dark';
 
   return (
-    <Animated.View entering={FadeIn.delay(200).duration(500)} style={styles.container}>
-      <View style={styles.emojiContainer}>
-        <ThemedText style={styles.emoji}>📝</ThemedText>
+    <Animated.View
+      entering={FadeIn.delay(200).duration(500)}
+      className="flex-1 items-center justify-center py-20 px-10"
+    >
+      <View className="w-20 h-20 rounded-3xl bg-[#6C5CE715] dark:bg-[#A29BFE15] items-center justify-center mb-5">
+        <Ionicons name="clipboard-outline" size={36} color={isDark ? '#A29BFE' : '#6C5CE7'} />
       </View>
-      <ThemedText style={styles.title}>{t('noTasks')}</ThemedText>
-      <ThemedText style={[styles.subtitle, isDark && styles.subtitleDark]}>
+      <ThemedText className="text-xl font-bold mb-2">{t('noTasks')}</ThemedText>
+      <ThemedText className="text-sm text-[#9CA3AF] dark:text-[#9BA1A6] text-center leading-[22px]">
         {t('noTasksHint')}
       </ThemedText>
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 80,
-    paddingHorizontal: 40,
-  },
-  emojiContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 24,
-    backgroundColor: '#6C5CE720',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  emoji: { fontSize: 36 },
-  title: { fontSize: 20, fontWeight: '700', marginBottom: 8 },
-  subtitle: { fontSize: 14, color: '#9CA3AF', textAlign: 'center', lineHeight: 22 },
-  subtitleDark: { color: '#9BA1A6' },
-});

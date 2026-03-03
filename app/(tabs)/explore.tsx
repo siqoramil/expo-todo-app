@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useColorScheme } from 'nativewind';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
+import Svg, { Circle } from 'react-native-svg';
 
 import { ThemedText } from '@/components/ThemedText';
 import { useTodos } from '@/hooks/useTodos';
-import { useAppStore, selectEffectiveTheme } from '@/stores/useAppStore';
+import { useAppStore } from '@/stores/useAppStore';
 import { CATEGORIES } from '@/types/todo';
 import { CATEGORY_COLORS, CATEGORY_EMOJI, PRIORITY_COLORS } from '@/i18n/translations';
 import type { TranslationKey } from '@/i18n/translations';
@@ -27,11 +30,51 @@ const PRIORITY_KEYS: Record<string, TranslationKey> = {
   high: 'high',
 };
 
+const PRIORITY_ICONS: Record<string, string> = {
+  high: 'flame-outline',
+  medium: 'flash-outline',
+  low: 'leaf-outline',
+};
+
+function ProgressRing({ rate, size, strokeWidth, color }: { rate: number; size: number; strokeWidth: number; color: string }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = circumference - (rate / 100) * circumference;
+
+  return (
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <Svg width={size} height={size} style={{ position: 'absolute' }}>
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="rgba(255,255,255,0.15)"
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={color}
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={`${circumference}`}
+          strokeDashoffset={progress}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </Svg>
+      <ThemedText className="text-[28px] font-extrabold text-white">{rate}%</ThemedText>
+    </View>
+  );
+}
+
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
   const t = useAppStore((s) => s.t);
-  const effectiveTheme = useAppStore(selectEffectiveTheme);
-  const isDark = effectiveTheme === 'dark';
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { todos, clearCompleted } = useTodos();
 
   const stats = useMemo(() => {
@@ -75,134 +118,175 @@ export default function StatsScreen() {
     return t('rateKeepGoing');
   };
 
+  const c = {
+    bg: isDark ? '#0F1115' : '#F4F5F9',
+    card: isDark ? '#191B1F' : '#FFFFFF',
+    cardBorder: isDark ? '#252830' : '#EBEBEF',
+    text: isDark ? '#E8E9ED' : '#1A1B1F',
+    textSecondary: isDark ? '#7A7E87' : '#8E919A',
+    barBg: isDark ? '#252830' : '#F0F1F5',
+  };
+
   return (
-    <View style={[styles.container, isDark ? styles.bgDark : styles.bgLight]}>
+    <View className="flex-1" style={{ backgroundColor: c.bg }}>
+      {/* Header with progress ring */}
       <LinearGradient
-        colors={isDark ? ['#1B3A4B', '#1E2022'] : ['#0984E3', '#74B9FF']}
+        colors={isDark ? ['#2D1B69', '#1E2022'] : ['#6C5CE7', '#A29BFE']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
+        className="px-5 pb-5 rounded-b-[28px]"
+        style={{ paddingTop: insets.top + 12 }}
       >
-        <Animated.View entering={FadeInDown.duration(600)}>
-          <ThemedText style={styles.headerTitle}>{t('statistics')}</ThemedText>
-          <ThemedText style={styles.headerSubtitle}>{t('statsSubtitle')}</ThemedText>
+        <Animated.View entering={FadeInDown.duration(600)} className="flex-row justify-between items-center mb-5">
+          <View className="flex-1 mr-4">
+            <ThemedText className="text-[28px] font-extrabold text-white mb-1">{t('statistics')}</ThemedText>
+            <ThemedText className="text-[14px] text-white/70 font-medium">{t('statsSubtitle')}</ThemedText>
+          </View>
+          <ProgressRing rate={stats.rate} size={88} strokeWidth={8} color="#fff" />
+        </Animated.View>
+
+        {/* Summary pills inside header */}
+        <Animated.View entering={FadeInDown.delay(200).duration(600)} className="flex-row bg-white/[0.12] rounded-2xl py-3.5 px-2 items-center">
+          <View className="flex-1 items-center gap-1">
+            <Ionicons name="layers-outline" size={18} color="rgba(255,255,255,0.85)" />
+            <ThemedText className="text-[22px] font-extrabold text-white">{stats.total}</ThemedText>
+            <ThemedText className="text-[11px] text-white/60 font-semibold">{t('total')}</ThemedText>
+          </View>
+          <View className="w-px h-8 bg-white/15" />
+          <View className="flex-1 items-center gap-1">
+            <Ionicons name="checkmark-done-circle-outline" size={18} color="#7DFFB3" />
+            <ThemedText className="text-[22px] font-extrabold text-white">{stats.completed}</ThemedText>
+            <ThemedText className="text-[11px] text-white/60 font-semibold">{t('done')}</ThemedText>
+          </View>
+          <View className="w-px h-8 bg-white/15" />
+          <View className="flex-1 items-center gap-1">
+            <Ionicons name="hourglass-outline" size={18} color="#FFD07A" />
+            <ThemedText className="text-[22px] font-extrabold text-white">{stats.pending}</ThemedText>
+            <ThemedText className="text-[11px] text-white/60 font-semibold">{t('pending')}</ThemedText>
+          </View>
         </Animated.View>
       </LinearGradient>
 
       <ScrollView
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: Platform.OS === 'ios' ? insets.bottom + 16 : 70 },
-        ]}
+        contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: Platform.OS === 'ios' ? insets.bottom + 16 : 80 }}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.summaryRow}>
-          <View style={[styles.summaryCard, isDark && styles.cardDark]}>
-            <ThemedText style={styles.summaryEmoji}>📋</ThemedText>
-            <ThemedText style={[styles.summaryValue, { color: '#6C5CE7' }]}>{stats.total}</ThemedText>
-            <ThemedText style={[styles.summaryLabel, isDark && styles.labelDark]}>{t('total')}</ThemedText>
-          </View>
-          <View style={[styles.summaryCard, isDark && styles.cardDark]}>
-            <ThemedText style={styles.summaryEmoji}>✅</ThemedText>
-            <ThemedText style={[styles.summaryValue, { color: '#00B894' }]}>{stats.completed}</ThemedText>
-            <ThemedText style={[styles.summaryLabel, isDark && styles.labelDark]}>{t('done')}</ThemedText>
-          </View>
-          <View style={[styles.summaryCard, isDark && styles.cardDark]}>
-            <ThemedText style={styles.summaryEmoji}>⏳</ThemedText>
-            <ThemedText style={[styles.summaryValue, { color: '#E17055' }]}>{stats.pending}</ThemedText>
-            <ThemedText style={[styles.summaryLabel, isDark && styles.labelDark]}>{t('pending')}</ThemedText>
-          </View>
-        </Animated.View>
-
+        {/* Rate message card */}
         <Animated.View
-          entering={FadeInDown.delay(200).duration(500)}
-          style={[styles.card, isDark && styles.cardDark]}
+          entering={FadeInDown.delay(100).duration(500)}
+          className="rounded-2xl border items-center py-4 px-5"
+          style={{ backgroundColor: c.card, borderColor: c.cardBorder }}
         >
-          <ThemedText style={styles.cardTitle}>{t('completionRate')}</ThemedText>
-          <View style={styles.rateContainer}>
-            <View style={[styles.circleOuter, { borderColor: stats.rate >= 50 ? '#00B894' : '#E17055' }]}>
-              <ThemedText style={[styles.rateValue, { color: stats.rate >= 50 ? '#00B894' : '#E17055' }]}>
-                {stats.rate}%
-              </ThemedText>
-            </View>
-            <View style={styles.rateInfo}>
-              <ThemedText style={[styles.rateText, isDark && styles.rateTextDark]}>{getRateMessage()}</ThemedText>
-            </View>
-          </View>
+          <ThemedText className="text-[15px] font-semibold text-center" style={{ color: c.text }}>{getRateMessage()}</ThemedText>
         </Animated.View>
 
+        {/* By Category */}
         {stats.byCategory.length > 0 && (
           <Animated.View
-            entering={FadeInDown.delay(300).duration(500)}
-            style={[styles.card, isDark && styles.cardDark]}
+            entering={FadeInDown.delay(200).duration(500)}
+            className="rounded-[20px] p-[18px] border"
+            style={{ backgroundColor: c.card, borderColor: c.cardBorder }}
           >
-            <ThemedText style={styles.cardTitle}>{t('byCategory')}</ThemedText>
-            {stats.byCategory.map((item) => (
-              <View key={item.category} style={styles.categoryRow}>
-                <View style={styles.categoryInfo}>
-                  <View style={[styles.catDot, { backgroundColor: CATEGORY_COLORS[item.category] }]} />
-                  <ThemedText style={styles.catName}>
-                    {CATEGORY_EMOJI[item.category]} {t(CATEGORY_KEYS[item.category])}
-                  </ThemedText>
-                </View>
-                <View style={styles.categoryProgress}>
-                  <View style={[styles.catBarBg, isDark && styles.catBarBgDark]}>
-                    <View
-                      style={[
-                        styles.catBarFill,
-                        {
-                          backgroundColor: CATEGORY_COLORS[item.category],
-                          width: item.total > 0 ? `${(item.completed / item.total) * 100}%` : '0%',
-                        },
-                      ]}
-                    />
-                  </View>
-                  <ThemedText style={[styles.catCount, isDark && styles.labelDark]}>
-                    {item.completed}/{item.total}
-                  </ThemedText>
-                </View>
+            <View className="flex-row items-center gap-2.5 mb-[18px]">
+              <View
+                className="w-8 h-8 rounded-[10px] items-center justify-center"
+                style={{ backgroundColor: isDark ? '#1E1535' : '#F0EDFF' }}
+              >
+                <Ionicons name="apps" size={16} color="#6C5CE7" />
               </View>
-            ))}
+              <ThemedText className="text-base font-bold" style={{ color: c.text }}>{t('byCategory')}</ThemedText>
+            </View>
+            {stats.byCategory.map((item, idx) => {
+              const pct = item.total > 0 ? Math.round((item.completed / item.total) * 100) : 0;
+              return (
+                <View
+                  key={item.category}
+                  className={`flex-row items-center gap-3 py-2.5 ${idx > 0 ? 'border-t' : ''}`}
+                  style={idx > 0 ? { borderTopColor: c.cardBorder } : undefined}
+                >
+                  <View
+                    className="w-10 h-10 rounded-xl items-center justify-center"
+                    style={{ backgroundColor: CATEGORY_COLORS[item.category] + '20' }}
+                  >
+                    <ThemedText className="text-lg">{CATEGORY_EMOJI[item.category]}</ThemedText>
+                  </View>
+                  <View className="flex-1 gap-1.5">
+                    <View className="flex-row justify-between items-center">
+                      <ThemedText className="text-sm font-semibold" style={{ color: c.text }}>
+                        {t(CATEGORY_KEYS[item.category])}
+                      </ThemedText>
+                      <ThemedText className="text-xs font-bold" style={{ color: c.textSecondary }}>
+                        {item.completed}/{item.total}
+                      </ThemedText>
+                    </View>
+                    <View className="h-1.5 rounded-[3px] overflow-hidden" style={{ backgroundColor: c.barBg }}>
+                      <View
+                        className="h-full rounded-[3px]"
+                        style={{ backgroundColor: CATEGORY_COLORS[item.category], width: `${pct}%` }}
+                      />
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
           </Animated.View>
         )}
 
+        {/* By Priority */}
         {stats.byPriority.length > 0 && (
           <Animated.View
-            entering={FadeInDown.delay(400).duration(500)}
-            style={[styles.card, isDark && styles.cardDark]}
+            entering={FadeInDown.delay(300).duration(500)}
+            className="rounded-[20px] p-[18px] border"
+            style={{ backgroundColor: c.card, borderColor: c.cardBorder }}
           >
-            <ThemedText style={styles.cardTitle}>{t('byPriority')}</ThemedText>
-            {stats.byPriority.map((item) => (
-              <View key={item.priority} style={styles.categoryRow}>
-                <View style={styles.categoryInfo}>
-                  <View style={[styles.catDot, { backgroundColor: PRIORITY_COLORS[item.priority] }]} />
-                  <ThemedText style={styles.catName}>{t(PRIORITY_KEYS[item.priority])}</ThemedText>
-                </View>
-                <View style={styles.categoryProgress}>
-                  <View style={[styles.catBarBg, isDark && styles.catBarBgDark]}>
-                    <View
-                      style={[
-                        styles.catBarFill,
-                        {
-                          backgroundColor: PRIORITY_COLORS[item.priority],
-                          width: item.total > 0 ? `${(item.completed / item.total) * 100}%` : '0%',
-                        },
-                      ]}
-                    />
-                  </View>
-                  <ThemedText style={[styles.catCount, isDark && styles.labelDark]}>
-                    {item.completed}/{item.total}
-                  </ThemedText>
-                </View>
+            <View className="flex-row items-center gap-2.5 mb-[18px]">
+              <View
+                className="w-8 h-8 rounded-[10px] items-center justify-center"
+                style={{ backgroundColor: isDark ? '#2A1E1E' : '#FFF0ED' }}
+              >
+                <Ionicons name="ribbon" size={16} color="#E17055" />
               </View>
-            ))}
+              <ThemedText className="text-base font-bold" style={{ color: c.text }}>{t('byPriority')}</ThemedText>
+            </View>
+            <View className="flex-row gap-2.5">
+              {stats.byPriority.map((item) => {
+                const pct = item.total > 0 ? Math.round((item.completed / item.total) * 100) : 0;
+                return (
+                  <View
+                    key={item.priority}
+                    className="flex-1 items-center py-4 px-2 rounded-2xl border gap-1.5"
+                    style={{ backgroundColor: isDark ? '#13151A' : '#FAFBFC', borderColor: c.cardBorder }}
+                  >
+                    <View
+                      className="w-[38px] h-[38px] rounded-xl items-center justify-center"
+                      style={{ backgroundColor: PRIORITY_COLORS[item.priority] + '18' }}
+                    >
+                      <Ionicons name={PRIORITY_ICONS[item.priority] as any} size={18} color={PRIORITY_COLORS[item.priority]} />
+                    </View>
+                    <ThemedText className="text-xs font-semibold" style={{ color: c.text }}>{t(PRIORITY_KEYS[item.priority])}</ThemedText>
+                    <ThemedText className="text-[22px] font-extrabold" style={{ color: PRIORITY_COLORS[item.priority] }}>
+                      {pct}%
+                    </ThemedText>
+                    <ThemedText className="text-[11px] font-semibold" style={{ color: c.textSecondary }}>
+                      {item.completed}/{item.total}
+                    </ThemedText>
+                  </View>
+                );
+              })}
+            </View>
           </Animated.View>
         )}
 
+        {/* Clear completed */}
         {stats.completed > 0 && (
-          <Animated.View entering={FadeInDown.delay(500).duration(500)}>
-            <Pressable onPress={handleClearCompleted} style={[styles.clearBtn, isDark && styles.clearBtnDark]}>
-              <ThemedText style={styles.clearBtnText}>
+          <Animated.View entering={FadeInDown.delay(400).duration(500)}>
+            <Pressable
+              onPress={handleClearCompleted}
+              className="flex-row items-center justify-center gap-2 py-[15px] rounded-2xl border"
+              style={{ backgroundColor: isDark ? '#1A1315' : '#FEF5F3', borderColor: isDark ? '#2D2025' : '#FDE8E4' }}
+            >
+              <Ionicons name="trash-outline" size={18} color="#E17055" />
+              <ThemedText className="text-sm font-bold text-[#E17055]">
                 {t('clearCompleted')} ({stats.completed})
               </ThemedText>
             </Pressable>
@@ -212,90 +296,3 @@ export default function StatsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  bgLight: { backgroundColor: '#F7F8FC' },
-  bgDark: { backgroundColor: '#151718' },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  headerTitle: { fontSize: 28, fontWeight: '800', color: '#fff', marginBottom: 4 },
-  headerSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.7)', fontWeight: '500' },
-  scrollContent: { padding: 16, gap: 14 },
-  summaryRow: { flexDirection: 'row', gap: 10 },
-  summaryCard: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 16,
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-  },
-  cardDark: { backgroundColor: '#1E2022' },
-  summaryEmoji: { fontSize: 24, marginBottom: 8 },
-  summaryValue: { fontSize: 28, fontWeight: '800' },
-  summaryLabel: { fontSize: 12, color: '#9CA3AF', fontWeight: '600', marginTop: 2 },
-  labelDark: { color: '#9BA1A6' },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-  },
-  cardTitle: { fontSize: 16, fontWeight: '700', marginBottom: 16 },
-  rateContainer: { flexDirection: 'row', alignItems: 'center', gap: 20 },
-  circleOuter: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    borderWidth: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rateValue: { fontSize: 26, fontWeight: '800' },
-  rateInfo: { flex: 1 },
-  rateText: { fontSize: 14, color: '#6B7280', lineHeight: 22 },
-  rateTextDark: { color: '#9BA1A6' },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 14,
-  },
-  categoryInfo: { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
-  catDot: { width: 10, height: 10, borderRadius: 5 },
-  catName: { fontSize: 14, fontWeight: '600' },
-  categoryProgress: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
-  catBarBg: {
-    flex: 1,
-    height: 8,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  catBarBgDark: { backgroundColor: '#2A2D30' },
-  catBarFill: { height: '100%', borderRadius: 4 },
-  catCount: { fontSize: 12, fontWeight: '700', color: '#9CA3AF', minWidth: 30, textAlign: 'right' },
-  clearBtn: {
-    backgroundColor: '#FEE2E2',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  clearBtnDark: {
-    backgroundColor: '#3D2020',
-  },
-  clearBtnText: { fontSize: 15, fontWeight: '700', color: '#E17055' },
-});

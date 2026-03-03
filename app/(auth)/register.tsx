@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  StyleSheet,
   TextInput,
   View,
 } from 'react-native';
@@ -13,16 +12,20 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useColorScheme } from 'nativewind';
 
 import { ThemedText } from '@/components/ThemedText';
-import { useAppStore, selectEffectiveTheme } from '@/stores/useAppStore';
+import { useAppStore } from '@/stores/useAppStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function RegisterScreen() {
   const insets = useSafeAreaInsets();
   const t = useAppStore((s) => s.t);
-  const effectiveTheme = useAppStore(selectEffectiveTheme);
-  const isDark = effectiveTheme === 'dark';
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const language = useAppStore((s) => s.language);
+  const setLanguage = useAppStore((s) => s.setLanguage);
 
   const signUp = useAuthStore((s) => s.signUp);
   const loading = useAuthStore((s) => s.loading);
@@ -33,212 +36,116 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     setError(null);
-    const result = await signUp(email.trim(), password);
+    const result = await signUp(email.trim(), password, t);
     if (result.error) {
       setError(result.error);
     }
   };
 
-  const inputBg = isDark ? '#2A2D30' : '#F3F4F6';
-  const inputColor = isDark ? '#F5F5F5' : '#1A1A2E';
-  const placeholderColor = isDark ? '#6B7280' : '#9CA3AF';
-
   return (
-    <View style={[styles.container, isDark ? styles.bgDark : styles.bgLight]}>
+    <View className="flex-1 bg-app-bg dark:bg-app-bg-dark">
       <LinearGradient
         colors={isDark ? ['#2D3436', '#1E2022'] : ['#636E72', '#B2BEC3']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 20 }]}
+        className="px-5 pb-8 rounded-b-[28px]"
+        style={{ paddingTop: insets.top + 20 }}
       >
-        <Animated.View entering={FadeInDown.duration(600)} style={styles.headerContent}>
-          <Ionicons name="person-add" size={48} color="#fff" style={styles.headerIcon} />
-          <ThemedText style={styles.headerTitle}>{t('registerTitle')}</ThemedText>
-          <ThemedText style={styles.headerSubtitle}>{t('registerSubtitle')}</ThemedText>
+        <Animated.View entering={FadeInDown.duration(600)} className="items-center">
+          <Ionicons name="person-add" size={48} color="#fff" className="mb-3" />
+          <ThemedText className="text-[28px] font-extrabold text-white mb-1">{t('registerTitle')}</ThemedText>
+          <ThemedText className="text-sm text-white/70 font-medium">{t('registerSubtitle')}</ThemedText>
         </Animated.View>
       </LinearGradient>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.form}
+        className="flex-1 p-4 justify-center"
       >
+        <Animated.View entering={FadeInDown.delay(50).duration(400)} className="flex-row justify-center gap-2 mb-4">
+          {(['uz', 'ru', 'en'] as const).map((lang) => {
+            const flag = lang === 'uz' ? '🇺🇿' : lang === 'ru' ? '🇷🇺' : '🇺🇸';
+            const active = language === lang;
+            return (
+              <Pressable
+                key={lang}
+                onPress={() => setLanguage(lang)}
+                className={`flex-row items-center gap-1 px-3 py-1.5 rounded-full ${
+                  active ? 'bg-primary' : 'bg-white/15'
+                }`}
+              >
+                <ThemedText className="text-base">{flag}</ThemedText>
+                <ThemedText className={`text-xs font-semibold ${active ? 'text-white' : 'text-black/50'}`}>
+                  {lang.toUpperCase()}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </Animated.View>
+
         <Animated.View
           entering={FadeInDown.delay(100).duration(500)}
-          style={[styles.card, isDark && styles.cardDark]}
+          className="bg-app-card dark:bg-app-card-dark rounded-[18px] p-5 shadow-sm elevation-2"
         >
-          <View style={styles.fieldGroup}>
-            <ThemedText style={[styles.fieldLabel, isDark && styles.fieldLabelDark]}>
+          <View className="mb-4">
+            <ThemedText className="text-[13px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
               {t('emailLabel')}
             </ThemedText>
             <TextInput
-              style={[styles.input, { backgroundColor: inputBg, color: inputColor }]}
+              className="px-3.5 py-3 rounded-xl text-[15px] font-medium bg-gray-100 dark:bg-[#2A2D30] text-[#1A1A2E] dark:text-[#F5F5F5]"
               value={email}
               onChangeText={setEmail}
               placeholder={t('emailPlaceholder')}
-              placeholderTextColor={placeholderColor}
+              placeholderTextColor={isDark ? '#6B7280' : '#9CA3AF'}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
             />
           </View>
 
-          <View style={styles.fieldGroup}>
-            <ThemedText style={[styles.fieldLabel, isDark && styles.fieldLabelDark]}>
+          <View className="mb-4">
+            <ThemedText className="text-[13px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
               {t('passwordLabel')}
             </ThemedText>
             <TextInput
-              style={[styles.input, { backgroundColor: inputBg, color: inputColor }]}
+              className="px-3.5 py-3 rounded-xl text-[15px] font-medium bg-gray-100 dark:bg-[#2A2D30] text-[#1A1A2E] dark:text-[#F5F5F5]"
               value={password}
               onChangeText={setPassword}
               placeholder="••••••••"
-              placeholderTextColor={placeholderColor}
+              placeholderTextColor={isDark ? '#6B7280' : '#9CA3AF'}
               secureTextEntry
               autoComplete="new-password"
             />
           </View>
 
           {error && (
-            <View style={styles.errorBox}>
-              <ThemedText style={styles.errorText}>{error}</ThemedText>
+            <View className="bg-red-100 rounded-[10px] p-3 mb-3.5">
+              <ThemedText className="text-danger text-[13px] font-medium text-center">{error}</ThemedText>
             </View>
           )}
 
           <Pressable
             onPress={handleRegister}
             disabled={loading || !email || !password}
-            style={[styles.primaryBtn, (loading || !email || !password) && styles.primaryBtnDisabled]}
+            className={`bg-primary py-3.5 rounded-[14px] items-center mt-1 ${
+              (loading || !email || !password) ? 'opacity-50' : ''
+            }`}
           >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <ThemedText style={styles.primaryBtnText}>{t('registerButton')}</ThemedText>
+              <ThemedText className="text-white text-base font-bold">{t('registerButton')}</ThemedText>
             )}
           </Pressable>
 
-          <Pressable onPress={() => router.replace('/(auth)/login')} style={styles.linkBtn}>
-            <ThemedText style={[styles.linkText, isDark && styles.linkTextDark]}>
+          <Pressable onPress={() => router.replace('/(auth)/login')} className="flex-row justify-center mt-4">
+            <ThemedText className="text-sm text-gray-500 dark:text-gray-400">
               {t('haveAccount')}{' '}
             </ThemedText>
-            <ThemedText style={styles.linkTextAccent}>{t('login')}</ThemedText>
+            <ThemedText className="text-sm text-primary font-semibold">{t('login')}</ThemedText>
           </Pressable>
         </Animated.View>
       </KeyboardAvoidingView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  bgLight: {
-    backgroundColor: '#F7F8FC',
-  },
-  bgDark: {
-    backgroundColor: '#151718',
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 32,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  headerContent: {
-    alignItems: 'center',
-  },
-  headerIcon: {
-    marginBottom: 12,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: '500',
-  },
-  form: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-  },
-  cardDark: {
-    backgroundColor: '#1E2022',
-  },
-  fieldGroup: {
-    marginBottom: 16,
-  },
-  fieldLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 6,
-  },
-  fieldLabelDark: {
-    color: '#9CA3AF',
-  },
-  input: {
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  errorBox: {
-    backgroundColor: '#FEE2E2',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 14,
-  },
-  errorText: {
-    color: '#DC2626',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  primaryBtn: {
-    backgroundColor: '#6C5CE7',
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  primaryBtnDisabled: {
-    opacity: 0.5,
-  },
-  primaryBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  linkBtn: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  linkText: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  linkTextDark: {
-    color: '#9CA3AF',
-  },
-  linkTextAccent: {
-    fontSize: 14,
-    color: '#6C5CE7',
-    fontWeight: '600',
-  },
-});

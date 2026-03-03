@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -21,7 +21,7 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            position: 'absolute',
+            position: 'absolute' as const,
           },
           default: {
             elevation: 8,
@@ -29,14 +29,14 @@ export default function TabLayout() {
             height: 60,
           },
         }),
-        tabBarLabelStyle: styles.tabLabel,
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' as const },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: t('myTasks'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'checkmark-circle' : 'checkmark-circle-outline'} size={26} color={color} />
+            <Ionicons name={focused ? 'clipboard' : 'clipboard-outline'} size={24} color={color} />
           ),
         }}
       />
@@ -45,7 +45,7 @@ export default function TabLayout() {
         options={{
           title: t('statistics'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'bar-chart' : 'bar-chart-outline'} size={26} color={color} />
+            <Ionicons name={focused ? 'stats-chart' : 'stats-chart-outline'} size={24} color={color} />
           ),
         }}
       />
@@ -54,17 +54,10 @@ export default function TabLayout() {
         options={{
           title: t('profile'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'person-circle' : 'person-circle-outline'} size={26} color={color} />
+            <Ionicons name={focused ? 'settings' : 'settings-outline'} size={24} color={color} />
           ),
         }}
       />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  tabLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-});

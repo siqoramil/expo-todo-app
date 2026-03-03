@@ -13,6 +13,7 @@ interface TodoState {
   loading: boolean;
   loadTodos: (userId: string) => Promise<void>;
   addTodo: (userId: string, title: string, category: Category, priority: Priority) => Promise<void>;
+  editTodo: (id: string, title: string, category: Category, priority: Priority) => void;
   toggleTodo: (id: string) => void;
   deleteTodo: (id: string) => void;
   clearCompleted: (userId: string) => void;
@@ -54,6 +55,18 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     const updated = [newTodo, ...get().todos];
     set({ todos: updated });
     await persistTodos(userId, updated);
+  },
+
+  editTodo: (id, title, category, priority) => {
+    const todos = get().todos;
+    const updated = todos.map((t) =>
+      t.id === id ? { ...t, title: title.trim(), category, priority } : t,
+    );
+    set({ todos: updated });
+    const todo = todos.find((t) => t.id === id);
+    if (todo) {
+      persistTodos(todo.user_id, updated);
+    }
   },
 
   toggleTodo: (id) => {

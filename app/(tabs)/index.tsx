@@ -1,33 +1,36 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
   Platform,
   Pressable,
-  StyleSheet,
   TextInput,
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useColorScheme } from 'nativewind';
+import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedText } from '@/components/ThemedText';
 import { TodoItem } from '@/components/todo/TodoItem';
 import { AddTodoModal } from '@/components/todo/AddTodoModal';
+import { EditTodoModal } from '@/components/todo/EditTodoModal';
 import { CategoryFilter } from '@/components/todo/CategoryFilter';
 import { EmptyState } from '@/components/todo/EmptyState';
 import { useTodos } from '@/hooks/useTodos';
-import { useAppStore, selectEffectiveTheme } from '@/stores/useAppStore';
-import type { Category, Todo } from '@/types/todo';
+import { useAppStore } from '@/stores/useAppStore';
+import type { Category, Priority, Todo } from '@/types/todo';
 
 export default function TodoScreen() {
   const insets = useSafeAreaInsets();
   const t = useAppStore((s) => s.t);
-  const effectiveTheme = useAppStore(selectEffectiveTheme);
-  const isDark = effectiveTheme === 'dark';
-  const { todos, loading, addTodo, toggleTodo, deleteTodo } = useTodos();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const { todos, loading, addTodo, editTodo, toggleTodo, deleteTodo } = useTodos();
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState<Category | null>(null);
 
@@ -60,48 +63,63 @@ export default function TodoScreen() {
   const totalCount = todos.length;
   const progress = totalCount > 0 ? completedCount / totalCount : 0;
 
+  const handleEdit = useCallback((todo: Todo) => {
+    setEditingTodo(todo);
+  }, []);
+
+  const handleSaveEdit = useCallback(
+    (id: string, title: string, category: Category, priority: Priority) => {
+      editTodo(id, title, category, priority);
+    },
+    [editTodo],
+  );
+
   const renderItem = ({ item }: { item: Todo }) => (
-    <TodoItem todo={item} onToggle={toggleTodo} onDelete={deleteTodo} />
+    <TodoItem todo={item} onToggle={toggleTodo} onDelete={deleteTodo} onEdit={handleEdit} />
   );
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, isDark && styles.bgDark]}>
-        <ThemedText style={styles.loadingText}>{t('loading')}</ThemedText>
+      <View className="flex-1 items-center justify-center bg-app-bg dark:bg-app-bg-dark">
+        <ThemedText className="text-base text-[#888]">{t('loading')}</ThemedText>
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, isDark ? styles.bgDark : styles.bgLight]}>
+    <View className="flex-1 bg-app-bg dark:bg-app-bg-dark">
       <LinearGradient
         colors={isDark ? ['#2D1B69', '#1E2022'] : ['#6C5CE7', '#A29BFE']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
+        className="px-5 pb-5 rounded-b-[28px]"
+        style={{ paddingTop: insets.top + 12 }}
       >
         <Animated.View entering={FadeInDown.duration(600)}>
-          <ThemedText style={styles.greeting}>{t('greeting')}</ThemedText>
-          <ThemedText style={styles.headerTitle}>{t('myTasks')}</ThemedText>
+          <ThemedText className="text-[15px] text-white/80 font-medium">{t('greeting')}</ThemedText>
+          <ThemedText className="text-[28px] font-extrabold text-white mt-1 mb-[18px]">{t('myTasks')}</ThemedText>
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(200).duration(600)} style={styles.progressCard}>
-          <View style={styles.progressInfo}>
-            <ThemedText style={styles.progressLabel}>{t('todayResult')}</ThemedText>
-            <ThemedText style={styles.progressCount}>
+        <Animated.View entering={FadeInDown.delay(200).duration(600)} className="bg-white/15 rounded-2xl p-4 mb-4">
+          <View className="flex-row justify-between items-center mb-2.5">
+            <ThemedText className="text-[13px] text-white/70 font-medium">{t('todayResult')}</ThemedText>
+            <ThemedText className="text-[13px] text-white font-bold">
               {completedCount}/{totalCount} {t('completed')}
             </ThemedText>
           </View>
-          <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: `${progress * 100}%` }]} />
+          <View className="h-2 bg-white/20 rounded overflow-hidden">
+            <View
+              className="h-full bg-[#00D2FF] rounded"
+              style={{ width: `${progress * 100}%` }}
+            />
           </View>
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(400).duration(600)}>
-          <View style={styles.searchContainer}>
-            <ThemedText style={styles.searchIcon}>🔍</ThemedText>
+          <View className="flex-row items-center bg-white/15 rounded-[14px] px-3.5 h-[46px] gap-2">
+            <Ionicons name="search-outline" size={18} color="rgba(255,255,255,0.6)" />
             <TextInput
-              style={styles.searchInput}
+              className="flex-1 text-[15px] text-white h-full"
               placeholder={t('searchPlaceholder')}
               placeholderTextColor="rgba(255,255,255,0.5)"
               value={search}
@@ -109,7 +127,7 @@ export default function TodoScreen() {
             />
             {search.length > 0 && (
               <Pressable onPress={() => setSearch('')} hitSlop={8}>
-                <ThemedText style={styles.clearSearch}>✕</ThemedText>
+                <Ionicons name="close-circle" size={18} color="rgba(255,255,255,0.6)" />
               </Pressable>
             )}
           </View>
@@ -126,23 +144,24 @@ export default function TodoScreen() {
         data={filteredTodos}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        style={styles.flatList}
-        contentContainerStyle={styles.list}
+        className="flex-1"
+        contentContainerStyle={{ paddingVertical: 8, paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={EmptyState}
       />
 
       <Pressable
         onPress={() => setModalVisible(true)}
-        style={[styles.fab, { bottom: Platform.OS === 'ios' ? insets.bottom + 90 : 24 }]}
+        className="absolute right-5 shadow-lg shadow-primary"
+        style={{ bottom: Platform.OS === 'ios' ? insets.bottom + 90 : 24 }}
       >
         <LinearGradient
           colors={['#6C5CE7', '#A29BFE']}
-          style={styles.fabGradient}
+          className="w-[60px] h-[60px] rounded-[20px] items-center justify-center"
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <ThemedText style={styles.fabIcon}>+</ThemedText>
+          <Ionicons name="add" size={30} color="#fff" />
         </LinearGradient>
       </Pressable>
 
@@ -151,80 +170,13 @@ export default function TodoScreen() {
         onClose={() => setModalVisible(false)}
         onAdd={addTodo}
       />
+
+      <EditTodoModal
+        visible={editingTodo !== null}
+        todo={editingTodo}
+        onClose={() => setEditingTodo(null)}
+        onSave={handleSaveEdit}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  bgLight: { backgroundColor: '#F7F8FC' },
-  bgDark: { backgroundColor: '#151718' },
-  loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  loadingText: { fontSize: 16, color: '#888' },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  greeting: { fontSize: 15, color: 'rgba(255,255,255,0.8)', fontWeight: '500' },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#fff',
-    marginTop: 4,
-    marginBottom: 18,
-  },
-  progressCard: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-  },
-  progressInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  progressLabel: { fontSize: 13, color: 'rgba(255,255,255,0.7)', fontWeight: '500' },
-  progressCount: { fontSize: 13, color: '#fff', fontWeight: '700' },
-  progressBarBg: {
-    height: 8,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarFill: { height: '100%', backgroundColor: '#00D2FF', borderRadius: 4 },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    height: 46,
-    gap: 8,
-  },
-  searchIcon: { fontSize: 16 },
-  searchInput: { flex: 1, fontSize: 15, color: '#fff', height: '100%' },
-  clearSearch: { color: 'rgba(255,255,255,0.6)', fontSize: 16 },
-  flatList: { flex: 1 },
-  list: { paddingVertical: 8, paddingBottom: 120 },
-  fab: {
-    position: 'absolute',
-    right: 20,
-    elevation: 8,
-    shadowColor: '#6C5CE7',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-  },
-  fabGradient: {
-    width: 60,
-    height: 60,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fabIcon: { fontSize: 32, color: '#fff', fontWeight: '300', marginTop: -2 },
-});

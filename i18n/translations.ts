@@ -1,4 +1,4 @@
-export type Language = 'uz' | 'ru';
+export type Language = 'uz' | 'ru' | 'en';
 
 export const translations = {
   uz: {
@@ -34,6 +34,14 @@ export const translations = {
     // Empty state
     noTasks: "Vazifalar yo'q",
     noTasksHint: "Yangi vazifa qo'shish uchun\npastdagi \"+\" tugmasini bosing",
+
+    // Actions
+    edit: 'Tahrirlash',
+    delete: "O'chirish",
+    editTask: 'Vazifani tahrirlash',
+    deleteConfirm: 'Haqiqatan ham bu vazifani o\'chirishni xohlaysizmi?',
+    yes: 'Ha',
+    no: 'Yo\'q',
 
     // Time
     now: 'Hozir',
@@ -98,6 +106,20 @@ export const translations = {
     registerTitle: 'Yangi hisob',
     registerSubtitle: "Ro'yxatdan o'ting",
 
+    // Auth validation
+    validationEmailRequired: 'Email kiritish shart',
+    validationEmailInvalid: "Email formati noto'g'ri",
+    validationPasswordRequired: 'Parol kiritish shart',
+    validationPasswordMin: 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak',
+    userNotFound: 'Foydalanuvchi topilmadi',
+    wrongPassword: "Parol noto'g'ri",
+    emailAlreadyRegistered: "Bu email allaqachon ro'yxatdan o'tgan",
+    signInError: 'Kirish xatosi yuz berdi',
+    signUpError: "Ro'yxatdan o'tish xatosi yuz berdi",
+
+    // Settings
+    english: 'Inglizcha',
+
     // Loading
     loading: 'Yuklanmoqda...',
   },
@@ -134,6 +156,14 @@ export const translations = {
     // Empty state
     noTasks: 'Задач нет',
     noTasksHint: 'Нажмите кнопку "+" внизу,\nчтобы добавить новую задачу',
+
+    // Actions
+    edit: 'Редактировать',
+    delete: 'Удалить',
+    editTask: 'Редактировать задачу',
+    deleteConfirm: 'Вы действительно хотите удалить эту задачу?',
+    yes: 'Да',
+    no: 'Нет',
 
     // Time
     now: 'Сейчас',
@@ -198,8 +228,142 @@ export const translations = {
     registerTitle: 'Новый аккаунт',
     registerSubtitle: 'Зарегистрируйтесь',
 
+    // Auth validation
+    validationEmailRequired: 'Введите email',
+    validationEmailInvalid: 'Неверный формат email',
+    validationPasswordRequired: 'Введите пароль',
+    validationPasswordMin: 'Пароль должен содержать минимум 6 символов',
+    userNotFound: 'Пользователь не найден',
+    wrongPassword: 'Неверный пароль',
+    emailAlreadyRegistered: 'Этот email уже зарегистрирован',
+    signInError: 'Ошибка при входе',
+    signUpError: 'Ошибка при регистрации',
+
+    // Settings
+    english: 'Английский',
+
     // Loading
     loading: 'Загрузка...',
+  },
+  en: {
+    // Header
+    greeting: 'Hello! 👋',
+    myTasks: 'My Tasks',
+    todayResult: "Today's Result",
+    completed: 'completed',
+    searchPlaceholder: 'Search tasks...',
+
+    // Categories
+    all: 'All',
+    personal: 'Personal',
+    work: 'Work',
+    shopping: 'Shopping',
+    health: 'Health',
+    study: 'Study',
+    other: 'Other',
+
+    // Priority
+    low: 'Low',
+    medium: 'Medium',
+    high: 'High',
+
+    // Add modal
+    newTask: 'New Task',
+    writeTask: 'Write a task...',
+    category: 'Category',
+    priority: 'Priority',
+    cancel: 'Cancel',
+    add: 'Add',
+
+    // Empty state
+    noTasks: 'No tasks',
+    noTasksHint: 'Press the "+" button below\nto add a new task',
+
+    // Actions
+    edit: 'Edit',
+    delete: 'Delete',
+    editTask: 'Edit Task',
+    deleteConfirm: 'Are you sure you want to delete this task?',
+    yes: 'Yes',
+    no: 'No',
+
+    // Time
+    now: 'Now',
+    minutesShort: 'min',
+    hoursShort: 'h',
+    daysShort: 'd',
+
+    // Stats
+    statistics: 'Statistics',
+    statsSubtitle: 'Overview of your tasks',
+    total: 'Total',
+    done: 'Done',
+    pending: 'Pending',
+    completionRate: 'Completion Rate',
+    byCategory: 'By Category',
+    byPriority: 'By Priority',
+    clearCompleted: 'Clear Completed',
+    rateExcellent: 'Excellent! All tasks completed! 🎉',
+    rateGood: 'Great result! Keep going! 💪',
+    rateOkay: 'Good start! 👍',
+    rateNoTasks: 'No tasks added yet',
+    rateKeepGoing: 'Keep pushing! 🚀',
+
+    // Settings
+    settings: 'Settings',
+    settingsSubtitle: 'App settings',
+    appearance: 'Appearance',
+    lightTheme: 'Light',
+    darkTheme: 'Dark',
+    systemTheme: 'System',
+    language: 'Language',
+    uzbek: 'Uzbek',
+    russian: 'Russian',
+    english: 'English',
+
+    // Profile
+    profile: 'Profile',
+    profileSubtitle: 'Your personal information',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    email: 'Email',
+    firstNamePlaceholder: 'Enter your first name',
+    lastNamePlaceholder: 'Enter your last name',
+    emailPlaceholder: 'Your email address',
+    save: 'Save',
+    saved: 'Saved!',
+    changePhoto: 'Change photo',
+    personalInfo: 'Personal Info',
+
+    // Auth
+    login: 'Login',
+    register: 'Register',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
+    loginButton: 'Sign In',
+    registerButton: 'Sign Up',
+    noAccount: "Don't have an account?",
+    haveAccount: 'Already have an account?',
+    authError: 'An error occurred',
+    signOut: 'Sign Out',
+    loginTitle: 'Welcome!',
+    loginSubtitle: 'Sign in to your account',
+    registerTitle: 'New Account',
+    registerSubtitle: 'Create your account',
+
+    // Auth validation
+    validationEmailRequired: 'Email is required',
+    validationEmailInvalid: 'Invalid email format',
+    validationPasswordRequired: 'Password is required',
+    validationPasswordMin: 'Password must be at least 6 characters',
+    userNotFound: 'User not found',
+    wrongPassword: 'Incorrect password',
+    emailAlreadyRegistered: 'This email is already registered',
+    signInError: 'Sign in failed',
+    signUpError: 'Sign up failed',
+
+    // Loading
+    loading: 'Loading...',
   },
 } as const;
 

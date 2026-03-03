@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -32,27 +32,32 @@ export function CategoryFilter({ selected, onSelect, counts }: Props) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={styles.scrollView}
-      contentContainerStyle={styles.container}
+      className="grow-0"
+      contentContainerClassName="px-4 py-1.5 gap-1.5 items-center"
     >
       <Pressable
         onPress={() => {
           onSelect(null);
           Haptics.selectionAsync();
         }}
-        style={[
-          styles.chip,
-          isDark ? styles.chipDark : styles.chipLight,
-          selected === null && styles.chipActive,
-        ]}
+        className="flex-row items-center px-3 py-1.5 rounded-2xl gap-[5px] bg-[#F3F4F6] dark:bg-[#2A2D30]"
+        style={selected === null && { backgroundColor: '#6C5CE7' }}
       >
-        <ThemedText style={[styles.chipLabel, selected === null && styles.chipLabelActive]}>
+        <ThemedText
+          className={`text-xs font-semibold ${selected === null ? 'text-white' : ''}`}
+        >
           {t('all')}
         </ThemedText>
-        <View style={[styles.badge, isDark && styles.badgeDark, selected === null && styles.badgeActive]}>
-          <ThemedText style={[styles.badgeText, isDark && styles.badgeTextDark, selected === null && styles.badgeTextActive]}>
+        <View
+          className="rounded-lg min-w-[18px] px-[5px] py-[2px] bg-[#E5E7EB] dark:bg-[#3A3D40]"
+          style={selected === null && { backgroundColor: 'rgba(255,255,255,0.3)' }}
+        >
+          <Text
+            className="text-[10px] font-bold text-center text-[#6B7280] dark:text-[#9BA1A6]"
+            style={selected === null && { color: '#fff' }}
+          >
             {Object.values(counts).reduce((a, b) => a + b, 0)}
-          </ThemedText>
+          </Text>
         </View>
       </Pressable>
 
@@ -67,20 +72,25 @@ export function CategoryFilter({ selected, onSelect, counts }: Props) {
               onSelect(isSelected ? null : cat);
               Haptics.selectionAsync();
             }}
-            style={[
-              styles.chip,
-              isDark ? styles.chipDark : styles.chipLight,
-              isSelected && { backgroundColor: color },
-            ]}
+            className="flex-row items-center px-3 py-1.5 rounded-2xl gap-[5px] bg-[#F3F4F6] dark:bg-[#2A2D30]"
+            style={isSelected && { backgroundColor: color }}
           >
-            <ThemedText style={[styles.chipLabel, isSelected && styles.chipLabelActive]}>
+            <ThemedText
+              className={`text-xs font-semibold ${isSelected ? 'text-white' : ''}`}
+            >
               {CATEGORY_EMOJI[cat]} {t(CATEGORY_KEYS[cat])}
             </ThemedText>
             {count > 0 && (
-              <View style={[styles.badge, isDark && styles.badgeDark, isSelected && styles.badgeActive]}>
-                <ThemedText style={[styles.badgeText, isDark && styles.badgeTextDark, isSelected && styles.badgeTextActive]}>
+              <View
+                className="rounded-lg min-w-[18px] px-[5px] py-[2px] bg-[#E5E7EB] dark:bg-[#3A3D40]"
+                style={isSelected && { backgroundColor: 'rgba(255,255,255,0.3)' }}
+              >
+                <Text
+                  className="text-[10px] font-bold text-center text-[#6B7280] dark:text-[#9BA1A6]"
+                  style={isSelected && { color: '#fff' }}
+                >
                   {count}
-                </ThemedText>
+                </Text>
               </View>
             )}
           </Pressable>
@@ -89,37 +99,3 @@ export function CategoryFilter({ selected, onSelect, counts }: Props) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollView: { flexGrow: 0 },
-  container: { paddingHorizontal: 16, paddingVertical: 6, gap: 6, alignItems: 'center' },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    gap: 5,
-  },
-  chipLight: { backgroundColor: '#F3F4F6' },
-  chipDark: { backgroundColor: '#2A2D30' },
-  chipActive: { backgroundColor: '#6C5CE7' },
-  chipLabel: { fontSize: 12, fontWeight: '600' },
-  chipLabelActive: { color: '#fff' },
-  badge: {
-    backgroundColor: '#E5E7EB',
-    borderRadius: 8,
-    minWidth: 18,
-    height: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 5,
-  },
-  badgeDark: {
-    backgroundColor: '#3A3D40',
-  },
-  badgeActive: { backgroundColor: 'rgba(255,255,255,0.3)' },
-  badgeText: { fontSize: 10, fontWeight: '700', color: '#6B7280' },
-  badgeTextDark: { color: '#9BA1A6' },
-  badgeTextActive: { color: '#fff' },
-});

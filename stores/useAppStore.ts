@@ -112,7 +112,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       AsyncStorage.getItem(THEME_KEY),
     ]);
     set({
-      language: lang === 'uz' || lang === 'ru' ? lang : 'uz',
+      language: lang === 'uz' || lang === 'ru' || lang === 'en' ? lang : 'uz',
       themeMode:
         theme === 'light' || theme === 'dark' || theme === 'system'
           ? theme
