@@ -4,7 +4,6 @@ import Animated, {
   FadeIn,
   FadeInDown,
   FadeOut,
-  LinearTransition,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -98,7 +97,6 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
       onLongPress={handleLongPress}
       entering={FadeIn.duration(300)}
       exiting={FadeOut.duration(200)}
-      layout={LinearTransition.springify()}
       className="rounded-2xl mx-4 my-[5px] overflow-hidden flex-row shadow-sm"
       style={[
         { backgroundColor: c.card, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8 },

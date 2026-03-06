@@ -5,10 +5,10 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Text,
   TextInput,
   View,
 } from 'react-native';
-import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -68,14 +68,13 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={handleClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 justify-end"
       >
         <Pressable className="absolute inset-0 bg-black/50" onPress={handleClose} />
-        <Animated.View
-          entering={SlideInDown.springify().damping(20)}
+        <View
           className="rounded-t-[28px] px-6 pt-3 bg-white dark:bg-[#1E2022]"
           style={{ paddingBottom: Platform.OS === 'ios' ? 40 : 24 }}
         >
@@ -165,12 +164,12 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
               className={`flex-[2] py-4 rounded-[14px] items-center bg-[#6C5CE7] ${!title.trim() ? 'opacity-40' : ''}`}
               disabled={!title.trim()}
             >
-              <Animated.Text entering={FadeIn} className="text-base font-bold text-white">
+              <Text className="text-base font-bold text-white">
                 {t('save')}
-              </Animated.Text>
+              </Text>
             </Pressable>
           </View>
-        </Animated.View>
+        </View>
       </KeyboardAvoidingView>
     </Modal>
   );

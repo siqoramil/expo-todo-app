@@ -49,12 +49,12 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "4398e83c-7696-4d2e-a12e-1243fa9f9720"
+        "projectId": "f4c30b89-4725-4b9d-a910-7cd776d0706a"
       }
     },
     "owner": "ramildeveloper",
     "updates": {
-      "url": "https://u.expo.dev/4398e83c-7696-4d2e-a12e-1243fa9f9720"
+      "url": "https://u.expo.dev/f4c30b89-4725-4b9d-a910-7cd776d0706a"
     },
     "runtimeVersion": {
       "policy": "appVersion"
