@@ -1,5 +1,5 @@
 {
-  "name": "expo-template-default",
+  "name": "todo-app",
   "license": "0BSD",
   "main": "expo-router/entry",
   "version": "53.0.43",
