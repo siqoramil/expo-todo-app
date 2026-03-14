@@ -4,31 +4,29 @@ const fs = require('fs');
 
 const ASSETS_DIR = path.join(__dirname, '..', 'assets', 'images');
 
-// Todo App brand color - modern blue-violet gradient feel
-const PRIMARY_COLOR = '#6C63FF';
-const PRIMARY_DARK = '#5A52E0';
+// Todo App brand colors
+const PRIMARY_COLOR = '#6C5CE7';
+const PRIMARY_DARK = '#5A4BD4';
+const PRIMARY_LIGHT = '#A29BFE';
 const BG_COLOR = '#FFFFFF';
 const CHECK_COLOR = '#FFFFFF';
 
 function createIconSVG(size) {
-  const padding = Math.round(size * 0.15);
+  const padding = Math.round(size * 0.12);
   const iconArea = size - padding * 2;
   const centerX = size / 2;
   const centerY = size / 2;
 
-  // Rounded square background radius
   const bgRoundRadius = Math.round(size * 0.22);
-  const bgMargin = Math.round(size * 0.04);
+  const bgMargin = Math.round(size * 0.03);
 
-  // Checkmark and list lines sizing
-  const checkboxSize = Math.round(iconArea * 0.22);
-  const checkboxX = centerX - Math.round(iconArea * 0.28);
-  const lineStartX = centerX - Math.round(iconArea * 0.08);
-  const lineEndX = centerX + Math.round(iconArea * 0.32);
-  const lineHeight = Math.round(iconArea * 0.04);
-  const rowSpacing = Math.round(iconArea * 0.22);
+  const checkboxSize = Math.round(iconArea * 0.2);
+  const checkboxX = centerX - Math.round(iconArea * 0.26);
+  const lineStartX = centerX - Math.round(iconArea * 0.06);
+  const lineEndX = centerX + Math.round(iconArea * 0.3);
+  const lineHeight = Math.round(iconArea * 0.038);
+  const rowSpacing = Math.round(iconArea * 0.21);
 
-  // 3 rows position
   const row1Y = centerY - rowSpacing;
   const row2Y = centerY;
   const row3Y = centerY + rowSpacing;
@@ -39,69 +37,74 @@ function createIconSVG(size) {
       <stop offset="0%" style="stop-color:${PRIMARY_COLOR};stop-opacity:1" />
       <stop offset="100%" style="stop-color:${PRIMARY_DARK};stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.15" />
-      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0" />
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
     </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="${Math.round(size * 0.01)}" stdDeviation="${Math.round(size * 0.02)}" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
   </defs>
 
   <!-- Background rounded rect -->
   <rect x="${bgMargin}" y="${bgMargin}" width="${size - bgMargin * 2}" height="${size - bgMargin * 2}" rx="${bgRoundRadius}" ry="${bgRoundRadius}" fill="url(#bgGrad)"/>
 
   <!-- Subtle shine overlay -->
-  <rect x="${bgMargin}" y="${bgMargin}" width="${size - bgMargin * 2}" height="${size - bgMargin * 2}" rx="${bgRoundRadius}" ry="${bgRoundRadius}" fill="url(#shineGrad)"/>
+  <rect x="${bgMargin}" y="${bgMargin}" width="${size - bgMargin * 2}" height="${(size - bgMargin * 2) * 0.55}" rx="${bgRoundRadius}" ry="${bgRoundRadius}" fill="url(#shineGrad)"/>
 
   <!-- Row 1: Checked checkbox + line -->
-  ${createCheckedCheckbox(checkboxX, row1Y - checkboxSize / 2, checkboxSize)}
-  <rect x="${lineStartX}" y="${row1Y - lineHeight / 2}" width="${lineEndX - lineStartX}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${CHECK_COLOR}" opacity="0.9"/>
+  <g filter="url(#shadow)">
+    ${createCheckedCheckbox(checkboxX, row1Y - checkboxSize / 2, checkboxSize)}
+    <rect x="${lineStartX}" y="${row1Y - lineHeight / 2}" width="${lineEndX - lineStartX}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${CHECK_COLOR}" opacity="0.95"/>
+  </g>
 
-  <!-- Row 2: Checked checkbox + line -->
-  ${createCheckedCheckbox(checkboxX, row2Y - checkboxSize / 2, checkboxSize)}
-  <rect x="${lineStartX}" y="${row2Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.7}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${CHECK_COLOR}" opacity="0.9"/>
+  <!-- Row 2: Checked checkbox + shorter line -->
+  <g filter="url(#shadow)">
+    ${createCheckedCheckbox(checkboxX, row2Y - checkboxSize / 2, checkboxSize)}
+    <rect x="${lineStartX}" y="${row2Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.7}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${CHECK_COLOR}" opacity="0.95"/>
+  </g>
 
-  <!-- Row 3: Empty checkbox + line -->
-  ${createEmptyCheckbox(checkboxX, row3Y - checkboxSize / 2, checkboxSize)}
-  <rect x="${lineStartX}" y="${row3Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.85}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${CHECK_COLOR}" opacity="0.5"/>
-
+  <!-- Row 3: Empty checkbox + line (pending task) -->
+  <g>
+    ${createEmptyCheckbox(checkboxX, row3Y - checkboxSize / 2, checkboxSize)}
+    <rect x="${lineStartX}" y="${row3Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.85}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${CHECK_COLOR}" opacity="0.45"/>
+  </g>
 </svg>`;
 }
 
 function createCheckedCheckbox(x, y, size) {
-  const r = Math.round(size * 0.2);
-  const strokeW = Math.max(2, Math.round(size * 0.08));
-  // Checkmark path points
+  const r = Math.round(size * 0.22);
+  const strokeW = Math.max(2, Math.round(size * 0.09));
   const cx = x + size / 2;
   const cy = y + size / 2;
   const s = size * 0.3;
   return `
-  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" ry="${r}" fill="${CHECK_COLOR}" opacity="0.95"/>
+  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" ry="${r}" fill="${CHECK_COLOR}"/>
   <polyline points="${cx - s * 0.8},${cy} ${cx - s * 0.15},${cy + s * 0.7} ${cx + s * 0.9},${cy - s * 0.6}"
     fill="none" stroke="${PRIMARY_COLOR}" stroke-width="${strokeW}" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
 
 function createEmptyCheckbox(x, y, size) {
-  const r = Math.round(size * 0.2);
+  const r = Math.round(size * 0.22);
   const strokeW = Math.max(2, Math.round(size * 0.08));
   return `
-  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" ry="${r}" fill="none" stroke="${CHECK_COLOR}" stroke-width="${strokeW}" opacity="0.7"/>`;
+  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" ry="${r}" fill="none" stroke="${CHECK_COLOR}" stroke-width="${strokeW}" opacity="0.6"/>`;
 }
 
 function createAdaptiveIconSVG(size) {
-  // Adaptive icon foreground: just the todo list icon centered, no background
-  // The foreground should use ~66% of the canvas (safe zone)
+  // Android adaptive icon: foreground only, no background
+  // Safe zone is ~66% of canvas
   const safeZone = size * 0.66;
-  const offset = (size - safeZone) / 2;
-
   const centerX = size / 2;
   const centerY = size / 2;
-  const iconArea = safeZone * 0.8;
+  const iconArea = safeZone * 0.75;
 
-  const checkboxSize = Math.round(iconArea * 0.22);
-  const checkboxX = centerX - Math.round(iconArea * 0.28);
-  const lineStartX = centerX - Math.round(iconArea * 0.08);
-  const lineEndX = centerX + Math.round(iconArea * 0.32);
-  const lineHeight = Math.round(iconArea * 0.045);
-  const rowSpacing = Math.round(iconArea * 0.24);
+  const checkboxSize = Math.round(iconArea * 0.2);
+  const checkboxX = centerX - Math.round(iconArea * 0.26);
+  const lineStartX = centerX - Math.round(iconArea * 0.06);
+  const lineEndX = centerX + Math.round(iconArea * 0.3);
+  const lineHeight = Math.round(iconArea * 0.04);
+  const rowSpacing = Math.round(iconArea * 0.22);
 
   const row1Y = centerY - rowSpacing;
   const row2Y = centerY;
@@ -112,21 +115,21 @@ function createAdaptiveIconSVG(size) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <!-- Row 1: Checked -->
   ${createCheckedCheckboxDark(checkboxX, row1Y - checkboxSize / 2, checkboxSize, ICON_COLOR)}
-  <rect x="${lineStartX}" y="${row1Y - lineHeight / 2}" width="${lineEndX - lineStartX}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${ICON_COLOR}" opacity="0.8"/>
+  <rect x="${lineStartX}" y="${row1Y - lineHeight / 2}" width="${lineEndX - lineStartX}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${ICON_COLOR}" opacity="0.85"/>
 
   <!-- Row 2: Checked -->
   ${createCheckedCheckboxDark(checkboxX, row2Y - checkboxSize / 2, checkboxSize, ICON_COLOR)}
-  <rect x="${lineStartX}" y="${row2Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.7}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${ICON_COLOR}" opacity="0.8"/>
+  <rect x="${lineStartX}" y="${row2Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.7}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${ICON_COLOR}" opacity="0.85"/>
 
   <!-- Row 3: Empty -->
   ${createEmptyCheckboxDark(checkboxX, row3Y - checkboxSize / 2, checkboxSize, ICON_COLOR)}
-  <rect x="${lineStartX}" y="${row3Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.85}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${ICON_COLOR}" opacity="0.4"/>
+  <rect x="${lineStartX}" y="${row3Y - lineHeight / 2}" width="${(lineEndX - lineStartX) * 0.85}" height="${lineHeight}" rx="${lineHeight / 2}" fill="${ICON_COLOR}" opacity="0.35"/>
 </svg>`;
 }
 
 function createCheckedCheckboxDark(x, y, size, color) {
-  const r = Math.round(size * 0.2);
-  const strokeW = Math.max(2, Math.round(size * 0.08));
+  const r = Math.round(size * 0.22);
+  const strokeW = Math.max(2, Math.round(size * 0.09));
   const cx = x + size / 2;
   const cy = y + size / 2;
   const s = size * 0.3;
@@ -137,20 +140,19 @@ function createCheckedCheckboxDark(x, y, size, color) {
 }
 
 function createEmptyCheckboxDark(x, y, size, color) {
-  const r = Math.round(size * 0.2);
+  const r = Math.round(size * 0.22);
   const strokeW = Math.max(2, Math.round(size * 0.08));
   return `
-  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" ry="${r}" fill="none" stroke="${color}" stroke-width="${strokeW}" opacity="0.5"/>`;
+  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" ry="${r}" fill="none" stroke="${color}" stroke-width="${strokeW}" opacity="0.45"/>`;
 }
 
 function createSplashIconSVG(size) {
-  // Splash icon: larger, centered todo checkmark
   const centerX = size / 2;
   const centerY = size / 2;
-  const circleR = size * 0.38;
-  const strokeW = Math.round(size * 0.035);
+  const circleR = size * 0.4;
+  const strokeW = Math.round(size * 0.04);
 
-  const s = size * 0.15;
+  const s = size * 0.16;
   const cx = centerX;
   const cy = centerY;
 
@@ -160,10 +162,19 @@ function createSplashIconSVG(size) {
       <stop offset="0%" style="stop-color:${PRIMARY_COLOR};stop-opacity:1" />
       <stop offset="100%" style="stop-color:${PRIMARY_DARK};stop-opacity:1" />
     </linearGradient>
+    <filter id="splashShadow">
+      <feDropShadow dx="0" dy="${Math.round(size * 0.015)}" stdDeviation="${Math.round(size * 0.03)}" flood-color="${PRIMARY_DARK}" flood-opacity="0.3"/>
+    </filter>
   </defs>
 
-  <!-- Circle background -->
-  <circle cx="${centerX}" cy="${centerY}" r="${circleR}" fill="url(#splashGrad)"/>
+  <!-- Outer subtle ring -->
+  <circle cx="${centerX}" cy="${centerY}" r="${circleR + size * 0.06}" fill="none" stroke="${PRIMARY_LIGHT}" stroke-width="${Math.round(size * 0.005)}" opacity="0.3"/>
+
+  <!-- Circle background with shadow -->
+  <circle cx="${centerX}" cy="${centerY}" r="${circleR}" fill="url(#splashGrad)" filter="url(#splashShadow)"/>
+
+  <!-- Shine -->
+  <ellipse cx="${centerX - circleR * 0.15}" cy="${centerY - circleR * 0.25}" rx="${circleR * 0.6}" ry="${circleR * 0.35}" fill="white" opacity="0.08"/>
 
   <!-- Big checkmark -->
   <polyline points="${cx - s * 1.2},${cy + s * 0.1} ${cx - s * 0.2},${cy + s * 1.0} ${cx + s * 1.4},${cy - s * 0.9}"
@@ -172,14 +183,13 @@ function createSplashIconSVG(size) {
 }
 
 function createFaviconSVG(size) {
-  // Simple checkmark in a rounded square for favicon
-  const margin = Math.round(size * 0.08);
+  const margin = Math.round(size * 0.06);
   const bgSize = size - margin * 2;
-  const r = Math.round(bgSize * 0.22);
+  const r = Math.round(bgSize * 0.24);
   const centerX = size / 2;
   const centerY = size / 2;
   const s = size * 0.18;
-  const strokeW = Math.max(2, Math.round(size * 0.06));
+  const strokeW = Math.max(2, Math.round(size * 0.07));
 
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -199,35 +209,40 @@ function createFaviconSVG(size) {
 async function generateIcons() {
   console.log('Generating Todo App icons...\n');
 
-  // 1. Main app icon (1024x1024)
+  // Ensure assets directory exists
+  if (!fs.existsSync(ASSETS_DIR)) {
+    fs.mkdirSync(ASSETS_DIR, { recursive: true });
+  }
+
+  // 1. Main app icon (1024x1024) - required by both iOS and Android
   console.log('1. Generating icon.png (1024x1024)...');
   const iconSVG = createIconSVG(1024);
   await sharp(Buffer.from(iconSVG))
-    .png()
+    .png({ quality: 100 })
     .toFile(path.join(ASSETS_DIR, 'icon.png'));
   console.log('   Done!');
 
-  // 2. Adaptive icon foreground (1024x1024)
+  // 2. Adaptive icon foreground (1024x1024) - Android only
   console.log('2. Generating adaptive-icon.png (1024x1024)...');
   const adaptiveSVG = createAdaptiveIconSVG(1024);
   await sharp(Buffer.from(adaptiveSVG))
-    .png()
+    .png({ quality: 100 })
     .toFile(path.join(ASSETS_DIR, 'adaptive-icon.png'));
   console.log('   Done!');
 
-  // 3. Splash screen icon (1024x1024)
+  // 3. Splash screen icon (1024x1024) - used by expo-splash-screen
   console.log('3. Generating splash-icon.png (1024x1024)...');
   const splashSVG = createSplashIconSVG(1024);
   await sharp(Buffer.from(splashSVG))
-    .png()
+    .png({ quality: 100 })
     .toFile(path.join(ASSETS_DIR, 'splash-icon.png'));
   console.log('   Done!');
 
-  // 4. Favicon (48x48)
+  // 4. Favicon (48x48) - Web only
   console.log('4. Generating favicon.png (48x48)...');
   const faviconSVG = createFaviconSVG(48);
   await sharp(Buffer.from(faviconSVG))
-    .png()
+    .png({ quality: 100 })
     .toFile(path.join(ASSETS_DIR, 'favicon.png'));
   console.log('   Done!');
 

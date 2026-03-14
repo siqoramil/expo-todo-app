@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Platform, Pressable, ScrollView, View } from 'react-native';
+import { Platform, Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -72,6 +72,8 @@ function ProgressRing({ rate, size, strokeWidth, color }: { rate: number; size: 
 
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isSmall = width < 375;
   const t = useAppStore((s) => s.t);
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -134,15 +136,14 @@ export default function StatsScreen() {
         colors={isDark ? ['#2D1B69', '#1E2022'] : ['#6C5CE7', '#A29BFE']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        className="px-5 pb-5 rounded-b-[28px]"
-        style={{ paddingTop: insets.top + 12 }}
+        style={{ paddingTop: insets.top + 12, paddingHorizontal: isSmall ? 16 : 20, paddingBottom: isSmall ? 16 : 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}
       >
         <Animated.View entering={FadeInDown.duration(600)} className="flex-row justify-between items-center mb-5">
           <View className="flex-1 mr-4">
-            <ThemedText className="text-[28px] font-extrabold text-white mb-1">{t('statistics')}</ThemedText>
-            <ThemedText className="text-[14px] text-white/70 font-medium">{t('statsSubtitle')}</ThemedText>
+            <ThemedText style={{ fontSize: isSmall ? 24 : 28, fontWeight: '800', color: '#fff', marginBottom: 4 }}>{t('statistics')}</ThemedText>
+            <ThemedText style={{ fontSize: isSmall ? 12 : 14, color: 'rgba(255,255,255,0.7)', fontWeight: '500' }}>{t('statsSubtitle')}</ThemedText>
           </View>
-          <ProgressRing rate={stats.rate} size={88} strokeWidth={8} color="#fff" />
+          <ProgressRing rate={stats.rate} size={isSmall ? 72 : 88} strokeWidth={isSmall ? 6 : 8} color="#fff" />
         </Animated.View>
 
         {/* Summary pills inside header */}
@@ -168,7 +169,7 @@ export default function StatsScreen() {
       </LinearGradient>
 
       <ScrollView
-        contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: Platform.OS === 'ios' ? insets.bottom + 16 : 80 }}
+        contentContainerStyle={{ padding: isSmall ? 12 : 16, gap: 12, paddingBottom: Platform.OS === 'ios' ? insets.bottom + 16 : Math.max(insets.bottom, 16) + 70 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Rate message card */}

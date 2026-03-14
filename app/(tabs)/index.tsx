@@ -4,6 +4,7 @@ import {
   Platform,
   Pressable,
   TextInput,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -24,6 +25,8 @@ import type { Category, Priority, Todo } from '@/types/todo';
 
 export default function TodoScreen() {
   const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const isSmall = width < 375;
   const t = useAppStore((s) => s.t);
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -92,12 +95,11 @@ export default function TodoScreen() {
         colors={isDark ? ['#2D1B69', '#1E2022'] : ['#6C5CE7', '#A29BFE']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        className="px-5 pb-5 rounded-b-[28px]"
-        style={{ paddingTop: insets.top + 12 }}
+        style={{ paddingTop: insets.top + 12, paddingHorizontal: isSmall ? 16 : 20, paddingBottom: isSmall ? 16 : 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}
       >
         <Animated.View entering={FadeInDown.duration(600)}>
-          <ThemedText className="text-[15px] text-white/80 font-medium">{t('greeting')}</ThemedText>
-          <ThemedText className="text-[28px] font-extrabold text-white mt-1 mb-[18px]">{t('myTasks')}</ThemedText>
+          <ThemedText style={{ fontSize: isSmall ? 13 : 15, color: 'rgba(255,255,255,0.8)', fontWeight: '500' }}>{t('greeting')}</ThemedText>
+          <ThemedText style={{ fontSize: isSmall ? 24 : 28, fontWeight: '800', color: '#fff', marginTop: 4, marginBottom: isSmall ? 14 : 18 }}>{t('myTasks')}</ThemedText>
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(200).duration(600)} className="bg-white/15 rounded-2xl p-4 mb-4">
@@ -145,23 +147,40 @@ export default function TodoScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         className="flex-1"
-        contentContainerStyle={{ paddingVertical: 8, paddingBottom: 120 }}
+        contentContainerStyle={{
+          paddingVertical: 8,
+          paddingBottom: Platform.OS === 'ios' ? insets.bottom + 100 : 90,
+        }}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={EmptyState}
       />
 
       <Pressable
         onPress={() => setModalVisible(true)}
-        className="absolute right-5 shadow-lg shadow-primary"
-        style={{ bottom: Platform.OS === 'ios' ? insets.bottom + 90 : 24 }}
+        style={{
+          position: 'absolute',
+          right: isSmall ? 16 : 20,
+          bottom: Platform.OS === 'ios' ? insets.bottom + 80 : Math.max(insets.bottom, 16) + 16,
+          shadowColor: '#6C5CE7',
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.35,
+          shadowRadius: 12,
+          elevation: 10,
+        }}
       >
         <LinearGradient
           colors={['#6C5CE7', '#A29BFE']}
-          className="w-[60px] h-[60px] rounded-[20px] items-center justify-center"
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
+          style={{
+            width: isSmall ? 52 : 60,
+            height: isSmall ? 52 : 60,
+            borderRadius: isSmall ? 16 : 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          <Ionicons name="add" size={30} color="#fff" />
+          <Ionicons name="add" size={isSmall ? 26 : 30} color="#fff" />
         </LinearGradient>
       </Pressable>
 

@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -11,6 +11,10 @@ import { Ionicons } from '@expo/vector-icons';
 export default function TabLayout() {
   const t = useAppStore((s) => s.t);
   const effectiveTheme = useAppStore(selectEffectiveTheme);
+  const { width } = useWindowDimensions();
+  const isSmall = width < 375;
+  const iconSize = isSmall ? 22 : 24;
+  const tabHeight = Platform.select({ ios: undefined, default: isSmall ? 56 : 62 });
 
   return (
     <Tabs
@@ -26,17 +30,17 @@ export default function TabLayout() {
           default: {
             elevation: 8,
             borderTopWidth: 0,
-            height: 60,
+            height: tabHeight,
           },
         }),
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' as const },
+        tabBarLabelStyle: { fontSize: isSmall ? 10 : 11, fontWeight: '600' as const },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: t('myTasks'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'clipboard' : 'clipboard-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'clipboard' : 'clipboard-outline'} size={iconSize} color={color} />
           ),
         }}
       />
@@ -45,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: t('statistics'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'stats-chart' : 'stats-chart-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'stats-chart' : 'stats-chart-outline'} size={iconSize} color={color} />
           ),
         }}
       />
@@ -54,7 +58,7 @@ export default function TabLayout() {
         options={{
           title: t('profile'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'settings' : 'settings-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'settings' : 'settings-outline'} size={iconSize} color={color} />
           ),
         }}
       />

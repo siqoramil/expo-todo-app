@@ -61,16 +61,16 @@ export default function RootLayout() {
   }, [themeMode, setColorScheme]);
 
   useEffect(() => {
-    if (!authInitialized || !storeLoaded) return;
+    if (!authInitialized || !storeLoaded || !loaded) return;
 
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!user && !inAuthGroup) {
-      router.replace('/(auth)/login');
+      setTimeout(() => router.replace('/(auth)/login'), 0);
     } else if (user && inAuthGroup) {
-      router.replace('/(tabs)');
+      setTimeout(() => router.replace('/(tabs)'), 0);
     }
-  }, [user, authInitialized, storeLoaded, segments, router]);
+  }, [user, authInitialized, storeLoaded, loaded, segments, router]);
 
   const appReady = loaded && storeLoaded && authInitialized;
 
