@@ -91,7 +91,7 @@ export function AuthInput({
   // Floating label style
   const labelStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateY: interpolate(labelProgress.value, [0, 1], [0, -26]) },
+      { translateY: interpolate(labelProgress.value, [0, 1], [0, -30]) },
       { scale: interpolate(labelProgress.value, [0, 1], [1, 0.8]) },
     ],
     opacity: interpolate(labelProgress.value, [0, 0.5, 1], [0.5, 0.7, 1]),
@@ -123,7 +123,6 @@ export function AuthInput({
           shadowColor: accentColor,
           shadowOffset: { width: 0, height: 4 },
           elevation: focused ? 6 : 1,
-          overflow: 'hidden',
         },
         containerStyle,
       ]}
@@ -159,8 +158,9 @@ export function AuthInput({
             style={[
               {
                 position: 'absolute',
-                left: 0, top: 18,
+                left: -4, top: 18,
                 pointerEvents: 'none',
+                zIndex: 10,
               },
               labelStyle,
             ]}
@@ -169,6 +169,8 @@ export function AuthInput({
               style={{
                 fontSize: 13, fontWeight: '600',
                 color: focused ? accentColor : (isDark ? '#5A5E6A' : '#9CA3AF'),
+                backgroundColor: isDark ? '#14171E' : '#FAFAFD',
+                paddingHorizontal: 4,
               }}
             >
               {label}
@@ -232,17 +234,19 @@ export function AuthInput({
       </View>
 
       {/* Bottom glow line */}
-      <AnimatedView
-        style={[
-          {
-            position: 'absolute', bottom: 0,
-            left: '10%', right: '10%',
-            height: 2, borderRadius: 1,
-            backgroundColor: accentColor,
-          },
-          glowStyle,
-        ]}
-      />
+      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, overflow: 'hidden', borderBottomLeftRadius: 18, borderBottomRightRadius: 18 }}>
+        <AnimatedView
+          style={[
+            {
+              position: 'absolute', bottom: 0,
+              left: '10%', right: '10%',
+              height: 2, borderRadius: 1,
+              backgroundColor: accentColor,
+            },
+            glowStyle,
+          ]}
+        />
+      </View>
     </AnimatedView>
   );
 }
