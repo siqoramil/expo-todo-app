@@ -34,8 +34,10 @@ These documentation files are specifically formatted for AI agents and should be
 │   ├── _layout.tsx        # Root layout with theme provider
 │   └── modal.tsx          # Modal screen example
 ├── components/            # Reusable React components
-│   ├── ui/                # UI primitives (IconSymbol, Collapsible)
-│   └── ...                # Feature components (themed, haptic, parallax)
+│   ├── ui/                # UI primitives (TabBarBackground)
+│   ├── auth/              # Auth-related components
+│   ├── todo/              # Todo feature components
+│   └── ...                # Themed/haptic/splash components
 ├── constants/             # App-wide constants (theme, colors)
 ├── hooks/                 # Custom React hooks (color scheme, theme)
 ├── assets/                # Static assets (images, fonts)
