@@ -11,7 +11,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const ANIMATION_DURATION = 2800;
@@ -63,11 +63,7 @@ function FloatingParticle({
     opacity.value = withDelay(delay, withTiming(1, { duration: 400 }));
     progress.value = withDelay(
       delay,
-      withRepeat(
-        withTiming(1, { duration, easing: Easing.inOut(Easing.ease) }),
-        -1,
-        true,
-      ),
+      withRepeat(withTiming(1, { duration, easing: Easing.inOut(Easing.ease) }), -1, true),
     );
   }, []);
 
@@ -301,10 +297,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
 
   const logoAnimStyle = useAnimatedStyle(() => ({
     opacity: logoOpacity.value,
-    transform: [
-      { scale: logoScale.value },
-      { rotate: `${logoRotate.value}deg` },
-    ],
+    transform: [{ scale: logoScale.value }, { rotate: `${logoRotate.value}deg` }],
   }));
 
   const bgGlowStyle = useAnimatedStyle(() => ({
@@ -345,14 +338,12 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
           zIndex: 100,
         },
         containerExitStyle,
-      ]}
-    >
+      ]}>
       <LinearGradient
         colors={isDark ? [...gradientDark] : [...gradientLight]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-      >
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         {/* Floating particles */}
         {particles.map((p) => (
           <FloatingParticle
@@ -376,9 +367,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
               width: logoSize * 3,
               height: logoSize * 3,
               borderRadius: logoSize * 1.5,
-              backgroundColor: isDark
-                ? 'rgba(108, 92, 231, 0.15)'
-                : 'rgba(255, 255, 255, 0.1)',
+              backgroundColor: isDark ? 'rgba(108, 92, 231, 0.15)' : 'rgba(255, 255, 255, 0.1)',
             },
             bgGlowStyle,
           ]}
@@ -405,8 +394,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
                 elevation: 20,
               },
               logoAnimStyle,
-            ]}
-          >
+            ]}>
             <Image
               source={require('../assets/images/splash-icon.png')}
               style={{ width: '100%', height: '100%' }}
@@ -426,8 +414,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
               letterSpacing: 1.5,
             },
             textAnimStyle,
-          ]}
-        >
+          ]}>
           Todo App
         </Animated.Text>
 
@@ -442,8 +429,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
               letterSpacing: 0.8,
             },
             subtitleAnimStyle,
-          ]}
-        >
+          ]}>
           Organize your life
         </Animated.Text>
 
@@ -459,8 +445,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
               overflow: 'hidden',
             },
             subtitleAnimStyle,
-          ]}
-        >
+          ]}>
           <Animated.View
             style={[
               {
@@ -479,8 +464,7 @@ export function AnimatedSplashScreen({ onFinish, theme }: Props) {
             position: 'absolute',
             bottom: Math.max(height * 0.08, 60),
             alignItems: 'center',
-          }}
-        >
+          }}>
           <LoadingDots color={dotColor} />
         </View>
       </LinearGradient>

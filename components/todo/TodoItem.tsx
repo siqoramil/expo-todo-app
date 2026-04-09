@@ -65,18 +65,14 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
   const handleDelete = () => {
     setExpanded(false);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-    Alert.alert(
-      t('delete'),
-      t('deleteConfirm'),
-      [
-        { text: t('no'), style: 'cancel' },
-        {
-          text: t('yes'),
-          style: 'destructive',
-          onPress: () => onDelete(todo.id),
-        },
-      ],
-    );
+    Alert.alert(t('delete'), t('deleteConfirm'), [
+      { text: t('no'), style: 'cancel' },
+      {
+        text: t('yes'),
+        style: 'destructive',
+        onPress: () => onDelete(todo.id),
+      },
+    ]);
   };
 
   const handleLongPress = () => {
@@ -99,11 +95,17 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
       exiting={FadeOut.duration(200)}
       className="rounded-2xl mx-4 my-[5px] overflow-hidden flex-row shadow-sm"
       style={[
-        { backgroundColor: c.card, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8 },
+        {
+          backgroundColor: c.card,
+          elevation: 2,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 8,
+        },
         todo.completed && { opacity: isDark ? 0.6 : 0.7 },
         animatedStyle,
-      ]}
-    >
+      ]}>
       <View className="w-1 self-stretch" style={{ backgroundColor: prioColor }} />
 
       <View className="flex-1">
@@ -115,8 +117,7 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
                 { borderWidth: 2.5 },
                 isDark ? { borderColor: '#444' } : { borderColor: '#D1D5DB' },
                 todo.completed && { backgroundColor: catColor, borderColor: catColor },
-              ]}
-            >
+              ]}>
               {todo.completed && (
                 <Animated.View entering={FadeIn.duration(200)}>
                   <Ionicons name="checkmark" size={16} color="#fff" />
@@ -129,10 +130,12 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
             <ThemedText
               className="text-[15px] font-semibold leading-5"
               style={[
-                todo.completed && { textDecorationLine: 'line-through' as const, color: isDark ? '#555' : '#aaa' },
+                todo.completed && {
+                  textDecorationLine: 'line-through' as const,
+                  color: isDark ? '#555' : '#aaa',
+                },
               ]}
-              numberOfLines={2}
-            >
+              numberOfLines={2}>
               {todo.title}
             </ThemedText>
             <View className="flex-row items-center mt-1.5 gap-2">
@@ -147,7 +150,10 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
             </View>
           </View>
 
-          <Pressable onPress={() => setExpanded((prev) => !prev)} className="p-3.5 pl-1" hitSlop={8}>
+          <Pressable
+            onPress={() => setExpanded((prev) => !prev)}
+            className="p-3.5 pl-1"
+            hitSlop={8}>
             <Ionicons
               name={expanded ? 'chevron-up' : 'ellipsis-horizontal'}
               size={18}
@@ -161,16 +167,33 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
           <Animated.View
             entering={FadeInDown.duration(200)}
             className="flex-row mt-0.5"
-            style={{ backgroundColor: c.actionBg, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(0,0,0,0.06)' }}
-          >
-            <Pressable onPress={handleEdit} className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5">
+            style={{
+              backgroundColor: c.actionBg,
+              borderTopWidth: StyleSheet.hairlineWidth,
+              borderTopColor: 'rgba(0,0,0,0.06)',
+            }}>
+            <Pressable
+              onPress={handleEdit}
+              className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5">
               <Ionicons name="pencil-outline" size={17} color="#6C5CE7" />
-              <ThemedText className="text-[13px] font-semibold" style={{ color: '#6C5CE7' }}>{t('edit')}</ThemedText>
+              <ThemedText className="text-[13px] font-semibold" style={{ color: '#6C5CE7' }}>
+                {t('edit')}
+              </ThemedText>
             </Pressable>
-            <View style={{ width: StyleSheet.hairlineWidth, backgroundColor: isDark ? '#333' : '#E5E5EA', marginVertical: 6 }} />
-            <Pressable onPress={handleDelete} className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5">
+            <View
+              style={{
+                width: StyleSheet.hairlineWidth,
+                backgroundColor: isDark ? '#333' : '#E5E5EA',
+                marginVertical: 6,
+              }}
+            />
+            <Pressable
+              onPress={handleDelete}
+              className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5">
               <Ionicons name="trash-bin-outline" size={17} color="#E17055" />
-              <ThemedText className="text-[13px] font-semibold" style={{ color: '#E17055' }}>{t('delete')}</ThemedText>
+              <ThemedText className="text-[13px] font-semibold" style={{ color: '#E17055' }}>
+                {t('delete')}
+              </ThemedText>
             </Pressable>
           </Animated.View>
         )}
@@ -189,4 +212,3 @@ function getTimeAgo(timestamp: number, t: (key: TranslationKey) => string): stri
   const days = Math.floor(hours / 24);
   return `${days} ${t('daysShort')}`;
 }
-

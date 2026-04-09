@@ -36,8 +36,18 @@ import { useAppStore } from '@/stores/useAppStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 // Floating orb decoration
-function FloatingOrb({ size, color, x, y, delay }: {
-  size: number; color: string; x: number; y: number; delay: number;
+function FloatingOrb({
+  size,
+  color,
+  x,
+  y,
+  delay,
+}: {
+  size: number;
+  color: string;
+  x: number;
+  y: number;
+  delay: number;
 }) {
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
@@ -65,8 +75,12 @@ function FloatingOrb({ size, color, x, y, delay }: {
     <Animated.View
       style={[
         {
-          position: 'absolute', left: x, top: y,
-          width: size, height: size, borderRadius: size / 2,
+          position: 'absolute',
+          left: x,
+          top: y,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
           backgroundColor: color,
         },
         style,
@@ -104,10 +118,7 @@ export default function LoginScreen() {
   }, []);
 
   const logoStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: logoScale.value },
-      { rotate: `${logoRotate.value}deg` },
-    ],
+    transform: [{ scale: logoScale.value }, { rotate: `${logoRotate.value}deg` }],
   }));
 
   const btnStyle = useAnimatedStyle(() => ({
@@ -117,10 +128,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     setError(null);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    btnScale.value = withSequence(
-      withSpring(0.95),
-      withSpring(1),
-    );
+    btnScale.value = withSequence(withSpring(0.95), withSpring(1));
     const result = await signIn(email.trim(), password, t);
     if (result.error) {
       setError(result.error);
@@ -143,45 +151,77 @@ export default function LoginScreen() {
     <View style={{ flex: 1 }}>
       {/* Full screen gradient background */}
       <LinearGradient
-        colors={isDark
-          ? ['#0B0D12', '#12101F', '#0B0D12']
-          : ['#F0EDFF', '#E8E4FF', '#F4F5FA']
-        }
+        colors={isDark ? ['#0B0D12', '#12101F', '#0B0D12'] : ['#F0EDFF', '#E8E4FF', '#F4F5FA']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
 
       {/* Decorative floating orbs */}
-      <FloatingOrb size={120} color={isDark ? '#6C5CE720' : '#6C5CE715'} x={-30} y={height * 0.1} delay={0} />
-      <FloatingOrb size={80} color={isDark ? '#A29BFE18' : '#A29BFE12'} x={width - 60} y={height * 0.15} delay={300} />
-      <FloatingOrb size={60} color={isDark ? '#6C5CE715' : '#6C5CE710'} x={width * 0.3} y={height * 0.75} delay={600} />
-      <FloatingOrb size={100} color={isDark ? '#A29BFE12' : '#A29BFE08'} x={width - 100} y={height * 0.7} delay={900} />
+      <FloatingOrb
+        size={120}
+        color={isDark ? '#6C5CE720' : '#6C5CE715'}
+        x={-30}
+        y={height * 0.1}
+        delay={0}
+      />
+      <FloatingOrb
+        size={80}
+        color={isDark ? '#A29BFE18' : '#A29BFE12'}
+        x={width - 60}
+        y={height * 0.15}
+        delay={300}
+      />
+      <FloatingOrb
+        size={60}
+        color={isDark ? '#6C5CE715' : '#6C5CE710'}
+        x={width * 0.3}
+        y={height * 0.75}
+        delay={600}
+      />
+      <FloatingOrb
+        size={100}
+        color={isDark ? '#A29BFE12' : '#A29BFE08'}
+        x={width - 100}
+        y={height * 0.7}
+        delay={900}
+      />
 
       {/* Language selector - top right */}
       <Animated.View
         entering={FadeIn.delay(600).duration(400)}
         style={{
-          position: 'absolute', top: insets.top + 10, right: 16,
-          flexDirection: 'row', gap: 4, zIndex: 10,
+          position: 'absolute',
+          top: insets.top + 10,
+          right: 16,
+          flexDirection: 'row',
+          gap: 4,
+          zIndex: 10,
           backgroundColor: isDark ? 'rgba(20,22,28,0.8)' : 'rgba(255,255,255,0.8)',
-          borderRadius: 20, padding: 3,
-          borderWidth: 1, borderColor: isDark ? '#1E2028' : '#E8E9EE',
-        }}
-      >
+          borderRadius: 20,
+          padding: 3,
+          borderWidth: 1,
+          borderColor: isDark ? '#1E2028' : '#E8E9EE',
+        }}>
         {(['uz', 'ru', 'en'] as const).map((lang) => {
           const flag = lang === 'uz' ? '🇺🇿' : lang === 'ru' ? '🇷🇺' : '🇺🇸';
           const active = language === lang;
           return (
             <Pressable
               key={lang}
-              onPress={() => { Haptics.selectionAsync(); setLanguage(lang); }}
-              style={{
-                flexDirection: 'row', alignItems: 'center', gap: 4,
-                paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16,
-                backgroundColor: active ? '#6C5CE7' : 'transparent',
+              onPress={() => {
+                Haptics.selectionAsync();
+                setLanguage(lang);
               }}
-            >
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                borderRadius: 16,
+                backgroundColor: active ? '#6C5CE7' : 'transparent',
+              }}>
               <ThemedText style={{ fontSize: 14 }}>{flag}</ThemedText>
               {active && (
                 <ThemedText style={{ fontSize: 10, fontWeight: '700', color: '#fff' }}>
@@ -195,39 +235,42 @@ export default function LoginScreen() {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
+        style={{ flex: 1 }}>
         <ScrollView
           contentContainerStyle={{
-            flexGrow: 1, justifyContent: 'center',
+            flexGrow: 1,
+            justifyContent: 'center',
             paddingHorizontal: isSmall ? 20 : 28,
             paddingBottom: 30,
           }}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+          showsVerticalScrollIndicator={false}>
           {/* Logo & Title */}
           <Animated.View style={[{ alignItems: 'center', marginBottom: 36 }, logoStyle]}>
             <Animated.View
               entering={FadeInDown.duration(600)}
               style={{
-                width: isSmall ? 72 : 84, height: isSmall ? 72 : 84,
+                width: isSmall ? 72 : 84,
+                height: isSmall ? 72 : 84,
                 borderRadius: isSmall ? 22 : 26,
-                alignItems: 'center', justifyContent: 'center',
+                alignItems: 'center',
+                justifyContent: 'center',
                 marginBottom: 20,
                 shadowColor: '#6C5CE7',
                 shadowOffset: { width: 0, height: 10 },
-                shadowOpacity: 0.3, shadowRadius: 20, elevation: 15,
-              }}
-            >
+                shadowOpacity: 0.3,
+                shadowRadius: 20,
+                elevation: 15,
+              }}>
               <LinearGradient
                 colors={['#6C5CE7', '#8B7CF7']}
                 style={{
-                  width: '100%', height: '100%',
+                  width: '100%',
+                  height: '100%',
                   borderRadius: isSmall ? 22 : 26,
-                  alignItems: 'center', justifyContent: 'center',
-                }}
-              >
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                 <Ionicons name="checkmark-done" size={isSmall ? 34 : 40} color="#fff" />
               </LinearGradient>
             </Animated.View>
@@ -235,19 +278,21 @@ export default function LoginScreen() {
             <Animated.Text
               entering={FadeInDown.delay(150).duration(500)}
               style={{
-                fontSize: isSmall ? 26 : 30, fontWeight: '800',
-                color: c.text, letterSpacing: -0.5,
-              }}
-            >
+                fontSize: isSmall ? 26 : 30,
+                fontWeight: '800',
+                color: c.text,
+                letterSpacing: -0.5,
+              }}>
               {t('loginTitle')}
             </Animated.Text>
             <Animated.Text
               entering={FadeInDown.delay(250).duration(500)}
               style={{
-                fontSize: 14, fontWeight: '500',
-                color: c.textSecondary, marginTop: 6,
-              }}
-            >
+                fontSize: 14,
+                fontWeight: '500',
+                color: c.textSecondary,
+                marginTop: 6,
+              }}>
               {t('loginSubtitle')}
             </Animated.Text>
           </Animated.View>
@@ -257,14 +302,16 @@ export default function LoginScreen() {
             entering={FadeInUp.delay(300).duration(500).springify()}
             style={{
               backgroundColor: isDark ? 'rgba(20,22,28,0.7)' : 'rgba(255,255,255,0.85)',
-              borderRadius: 24, padding: isSmall ? 20 : 24,
-              borderWidth: 1, borderColor: c.cardBorder,
+              borderRadius: 24,
+              padding: isSmall ? 20 : 24,
+              borderWidth: 1,
+              borderColor: c.cardBorder,
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 8 },
               shadowOpacity: isDark ? 0.3 : 0.06,
-              shadowRadius: 24, elevation: 8,
-            }}
-          >
+              shadowRadius: 24,
+              elevation: 8,
+            }}>
             {/* Input fields */}
             <View style={{ gap: 14, marginBottom: 18 }}>
               <AuthInput
@@ -300,14 +347,19 @@ export default function LoginScreen() {
                 entering={FadeIn.duration(300)}
                 exiting={FadeOut.duration(200)}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 8,
-                  backgroundColor: c.errorBg, borderRadius: 12,
-                  padding: 12, marginBottom: 12,
-                  borderWidth: 1, borderColor: c.errorBorder,
-                }}
-              >
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
+                  backgroundColor: c.errorBg,
+                  borderRadius: 12,
+                  padding: 12,
+                  marginBottom: 12,
+                  borderWidth: 1,
+                  borderColor: c.errorBorder,
+                }}>
                 <Ionicons name="alert-circle" size={18} color={c.errorText} />
-                <ThemedText style={{ flex: 1, fontSize: 13, fontWeight: '500', color: c.errorText }}>
+                <ThemedText
+                  style={{ flex: 1, fontSize: 13, fontWeight: '500', color: c.errorText }}>
                   {error}
                 </ThemedText>
               </Animated.View>
@@ -318,17 +370,22 @@ export default function LoginScreen() {
               <Pressable
                 onPress={handleLogin}
                 disabled={loading || !email || !password}
-                style={{ borderRadius: 16, overflow: 'hidden', opacity: (!email || !password) ? 0.4 : 1 }}
-              >
+                style={{
+                  borderRadius: 16,
+                  overflow: 'hidden',
+                  opacity: !email || !password ? 0.4 : 1,
+                }}>
                 <LinearGradient
                   colors={['#6C5CE7', '#8B7CF7', '#A29BFE']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={{
-                    paddingVertical: 16, alignItems: 'center', justifyContent: 'center',
-                    flexDirection: 'row', gap: 8,
-                  }}
-                >
+                    paddingVertical: 16,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    gap: 8,
+                  }}>
                   {loading ? (
                     <ActivityIndicator color="#fff" />
                   ) : (
@@ -347,15 +404,21 @@ export default function LoginScreen() {
             <Animated.View
               entering={FadeIn.delay(700).duration(400)}
               style={{
-                flexDirection: 'row', alignItems: 'center',
-                marginTop: 20, marginBottom: 16, gap: 12,
-              }}
-            >
-              <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: c.cardBorder }} />
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+                marginBottom: 16,
+                gap: 12,
+              }}>
+              <View
+                style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: c.cardBorder }}
+              />
               <ThemedText style={{ fontSize: 11, fontWeight: '600', color: c.textSecondary }}>
                 {t('noAccount')}
               </ThemedText>
-              <View style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: c.cardBorder }} />
+              <View
+                style={{ flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: c.cardBorder }}
+              />
             </Animated.View>
 
             {/* Register link */}
@@ -363,14 +426,16 @@ export default function LoginScreen() {
               <Pressable
                 onPress={() => router.replace('/(auth)/register')}
                 style={{
-                  paddingVertical: 14, borderRadius: 16,
-                  alignItems: 'center', justifyContent: 'center',
-                  flexDirection: 'row', gap: 8,
+                  paddingVertical: 14,
+                  borderRadius: 16,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  gap: 8,
                   borderWidth: 1.5,
                   borderColor: isDark ? '#6C5CE740' : '#6C5CE730',
                   backgroundColor: isDark ? '#6C5CE708' : '#6C5CE706',
-                }}
-              >
+                }}>
                 <Ionicons name="person-add-outline" size={16} color="#6C5CE7" />
                 <ThemedText style={{ fontSize: 14, fontWeight: '700', color: '#6C5CE7' }}>
                   {t('register')}

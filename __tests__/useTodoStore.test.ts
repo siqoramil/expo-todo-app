@@ -13,7 +13,7 @@ describe('useTodoStore', () => {
   });
 
   describe('addTodo', () => {
-    it('yangi todo qo\'shishi kerak', async () => {
+    it("yangi todo qo'shishi kerak", async () => {
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'Test todo', 'personal', 'medium');
 
@@ -34,7 +34,7 @@ describe('useTodoStore', () => {
       expect(todos[0].title).toBe('Spaces around');
     });
 
-    it('yangi todo ro\'yxatning boshiga qo\'shilishi kerak', async () => {
+    it("yangi todo ro'yxatning boshiga qo'shilishi kerak", async () => {
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'First', 'personal', 'low');
       await addTodo('user1', 'Second', 'work', 'high');
@@ -54,7 +54,7 @@ describe('useTodoStore', () => {
       expect(todos[0].id).not.toBe(todos[1].id);
     });
 
-    it('createdAt timestamp bo\'lishi kerak', async () => {
+    it("createdAt timestamp bo'lishi kerak", async () => {
       const before = Date.now();
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'Todo', 'personal', 'low');
@@ -92,7 +92,7 @@ describe('useTodoStore', () => {
       expect(useTodoStore.getState().todos[0].title).toBe('Trimmed');
     });
 
-    it('mavjud bo\'lmagan id bilan hech narsa o\'zgarmaydi', async () => {
+    it("mavjud bo'lmagan id bilan hech narsa o'zgarmaydi", async () => {
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'Original', 'personal', 'low');
 
@@ -103,7 +103,7 @@ describe('useTodoStore', () => {
   });
 
   describe('toggleTodo', () => {
-    it('completed holatini o\'zgartirishi kerak', async () => {
+    it("completed holatini o'zgartirishi kerak", async () => {
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'Toggle me', 'personal', 'low');
 
@@ -119,14 +119,12 @@ describe('useTodoStore', () => {
   });
 
   describe('deleteTodo', () => {
-    it('todo ni o\'chirishi kerak', async () => {
+    it("todo ni o'chirishi kerak", async () => {
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'Delete me', 'personal', 'low');
       await addTodo('user1', 'Keep me', 'work', 'medium');
 
-      const idToDelete = useTodoStore.getState().todos.find(
-        (t) => t.title === 'Delete me',
-      )!.id;
+      const idToDelete = useTodoStore.getState().todos.find((t) => t.title === 'Delete me')!.id;
 
       useTodoStore.getState().deleteTodo(idToDelete);
 
@@ -154,7 +152,7 @@ describe('useTodoStore', () => {
       expect(remaining[0].title).toBe('Not done');
     });
 
-    it('bajarilgan todo bo\'lmasa hech narsa o\'zgarmasligi kerak', async () => {
+    it("bajarilgan todo bo'lmasa hech narsa o'zgarmasligi kerak", async () => {
       const { addTodo } = useTodoStore.getState();
       await addTodo('user1', 'Todo 1', 'personal', 'low');
       await addTodo('user1', 'Todo 2', 'work', 'medium');
@@ -183,7 +181,7 @@ describe('useTodoStore', () => {
       expect(loading).toBe(false);
     });
 
-    it('bo\'sh storage dan bo\'sh array qaytarishi kerak', async () => {
+    it("bo'sh storage dan bo'sh array qaytarishi kerak", async () => {
       await useTodoStore.getState().loadTodos('new_user');
 
       const { todos, loading } = useTodoStore.getState();

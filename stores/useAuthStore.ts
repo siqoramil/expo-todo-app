@@ -25,12 +25,16 @@ function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
 }
 
-async function getUsers(): Promise<Record<string, { id: string; email: string; password: string }>> {
+async function getUsers(): Promise<
+  Record<string, { id: string; email: string; password: string }>
+> {
   const raw = await AsyncStorage.getItem('@registered_users');
   return raw ? JSON.parse(raw) : {};
 }
 
-async function saveUsers(users: Record<string, { id: string; email: string; password: string }>): Promise<void> {
+async function saveUsers(
+  users: Record<string, { id: string; email: string; password: string }>,
+): Promise<void> {
   await AsyncStorage.setItem('@registered_users', JSON.stringify(users));
 }
 
@@ -41,7 +45,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signIn: async (email, password, t) => {
     if (!email.trim()) return { error: t('validationEmailRequired') };
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return { error: t('validationEmailInvalid') };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      return { error: t('validationEmailInvalid') };
     if (!password) return { error: t('validationPasswordRequired') };
     if (password.length < 6) return { error: t('validationPasswordMin') };
 
@@ -69,7 +74,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signUp: async (email, password, t) => {
     if (!email.trim()) return { error: t('validationEmailRequired') };
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return { error: t('validationEmailInvalid') };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      return { error: t('validationEmailInvalid') };
     if (!password) return { error: t('validationPasswordRequired') };
     if (password.length < 6) return { error: t('validationPasswordMin') };
 

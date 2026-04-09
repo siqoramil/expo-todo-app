@@ -1,12 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import {
-  FlatList,
-  Platform,
-  Pressable,
-  TextInput,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { FlatList, Platform, Pressable, TextInput, useWindowDimensions, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,7 +18,7 @@ import type { Category, Priority, Todo } from '@/types/todo';
 
 export default function TodoScreen() {
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const isSmall = width < 375;
   const t = useAppStore((s) => s.t);
   const { colorScheme } = useColorScheme();
@@ -95,25 +88,47 @@ export default function TodoScreen() {
         colors={isDark ? ['#2D1B69', '#1E2022'] : ['#6C5CE7', '#A29BFE']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={{ paddingTop: insets.top + 12, paddingHorizontal: isSmall ? 16 : 20, paddingBottom: isSmall ? 16 : 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}
-      >
+        style={{
+          paddingTop: insets.top + 12,
+          paddingHorizontal: isSmall ? 16 : 20,
+          paddingBottom: isSmall ? 16 : 20,
+          borderBottomLeftRadius: 28,
+          borderBottomRightRadius: 28,
+        }}>
         <Animated.View entering={FadeInDown.duration(600)}>
-          <ThemedText style={{ fontSize: isSmall ? 13 : 15, color: 'rgba(255,255,255,0.8)', fontWeight: '500' }}>{t('greeting')}</ThemedText>
-          <ThemedText style={{ fontSize: isSmall ? 24 : 28, fontWeight: '800', color: '#fff', marginTop: 4, marginBottom: isSmall ? 14 : 18 }}>{t('myTasks')}</ThemedText>
+          <ThemedText
+            style={{
+              fontSize: isSmall ? 13 : 15,
+              color: 'rgba(255,255,255,0.8)',
+              fontWeight: '500',
+            }}>
+            {t('greeting')}
+          </ThemedText>
+          <ThemedText
+            style={{
+              fontSize: isSmall ? 24 : 28,
+              fontWeight: '800',
+              color: '#fff',
+              marginTop: 4,
+              marginBottom: isSmall ? 14 : 18,
+            }}>
+            {t('myTasks')}
+          </ThemedText>
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(200).duration(600)} className="bg-white/15 rounded-2xl p-4 mb-4">
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(600)}
+          className="bg-white/15 rounded-2xl p-4 mb-4">
           <View className="flex-row justify-between items-center mb-2.5">
-            <ThemedText className="text-[13px] text-white/70 font-medium">{t('todayResult')}</ThemedText>
+            <ThemedText className="text-[13px] text-white/70 font-medium">
+              {t('todayResult')}
+            </ThemedText>
             <ThemedText className="text-[13px] text-white font-bold">
               {completedCount}/{totalCount} {t('completed')}
             </ThemedText>
           </View>
           <View className="h-2 bg-white/20 rounded overflow-hidden">
-            <View
-              className="h-full bg-[#00D2FF] rounded"
-              style={{ width: `${progress * 100}%` }}
-            />
+            <View className="h-full bg-[#00D2FF] rounded" style={{ width: `${progress * 100}%` }} />
           </View>
         </Animated.View>
 
@@ -166,8 +181,7 @@ export default function TodoScreen() {
           shadowOpacity: 0.35,
           shadowRadius: 12,
           elevation: 10,
-        }}
-      >
+        }}>
         <LinearGradient
           colors={['#6C5CE7', '#A29BFE']}
           start={{ x: 0, y: 0 }}
@@ -178,17 +192,12 @@ export default function TodoScreen() {
             borderRadius: isSmall ? 16 : 20,
             alignItems: 'center',
             justifyContent: 'center',
-          }}
-        >
+          }}>
           <Ionicons name="add" size={isSmall ? 26 : 30} color="#fff" />
         </LinearGradient>
       </Pressable>
 
-      <AddTodoModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onAdd={addTodo}
-      />
+      <AddTodoModal visible={modalVisible} onClose={() => setModalVisible(false)} onAdd={addTodo} />
 
       <EditTodoModal
         visible={editingTodo !== null}

@@ -9,11 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +18,7 @@ import { ThemedText } from '@/components/ThemedText';
 import type { Category, Priority } from '@/types/todo';
 import { CATEGORIES, PRIORITIES } from '@/types/todo';
 import { useAppStore, selectEffectiveTheme } from '@/stores/useAppStore';
-import { CATEGORY_COLORS, CATEGORY_EMOJI, PRIORITY_COLORS } from '@/i18n/translations';
+import { CATEGORY_COLORS, PRIORITY_COLORS } from '@/i18n/translations';
 import type { TranslationKey } from '@/i18n/translations';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -103,13 +99,14 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
     <Modal visible={visible} transparent animationType="none" onRequestClose={handleClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 justify-end"
-      >
-        <Pressable style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' }} onPress={handleClose} />
+        className="flex-1 justify-end">
+        <Pressable
+          style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' }}
+          onPress={handleClose}
+        />
         <View
           className="rounded-t-[28px] px-5 pt-3 bg-white dark:bg-[#1A1C20]"
-          style={{ paddingBottom: Platform.OS === 'ios' ? 40 : 24 }}
-        >
+          style={{ paddingBottom: Platform.OS === 'ios' ? 40 : 24 }}>
           {/* Invisible focusable view to prevent auto-focus on TextInput */}
           <View accessible={false} focusable importantForAccessibility="no">
             <TextInput style={{ width: 0, height: 0, position: 'absolute' }} editable={false} />
@@ -121,7 +118,11 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
           {/* Header */}
           <View className="flex-row items-center mb-5">
             <View className="w-10 h-10 rounded-xl items-center justify-center bg-[#F0EDFF] dark:bg-[#2D1B69]">
-              <Ionicons name="add-circle-outline" size={22} color={isDark ? '#A29BFE' : '#6C5CE7'} />
+              <Ionicons
+                name="add-circle-outline"
+                size={22}
+                color={isDark ? '#A29BFE' : '#6C5CE7'}
+              />
             </View>
             <View className="flex-1 ml-3">
               <ThemedText className="text-xl font-bold text-app-text-primary dark:text-app-text-primary-dark">
@@ -134,8 +135,7 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
             <Pressable
               onPress={handleClose}
               hitSlop={10}
-              className="w-8 h-8 rounded-[10px] items-center justify-center bg-app-surface dark:bg-app-surface-dark"
-            >
+              className="w-8 h-8 rounded-[10px] items-center justify-center bg-app-surface dark:bg-app-surface-dark">
               <Ionicons name="close" size={18} color={isDark ? '#7A7E87' : '#8E919A'} />
             </Pressable>
           </View>
@@ -144,8 +144,16 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
           <View>
             <View
               className="flex-row items-start rounded-2xl border-[1.5px] px-3.5 py-1 mb-1 bg-app-input-bg dark:bg-app-input-bg-dark"
-              style={{ borderColor: title.length > 0 ? (isDark ? '#A29BFE' : '#6C5CE7') : (isDark ? '#2D3038' : '#E4E5EA') }}
-            >
+              style={{
+                borderColor:
+                  title.length > 0
+                    ? isDark
+                      ? '#A29BFE'
+                      : '#6C5CE7'
+                    : isDark
+                      ? '#2D3038'
+                      : '#E4E5EA',
+              }}>
               <Ionicons
                 name="create-outline"
                 size={18}
@@ -193,11 +201,10 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
                           paddingVertical: 9,
                           borderRadius: 12,
                           borderWidth: 1.5,
-                          backgroundColor: selected ? color : (isDark ? '#22252A' : '#F5F6FA'),
-                          borderColor: selected ? color : (isDark ? '#2D3038' : '#EBEBEF'),
+                          backgroundColor: selected ? color : isDark ? '#22252A' : '#F5F6FA',
+                          borderColor: selected ? color : isDark ? '#2D3038' : '#EBEBEF',
                         },
-                      ]}
-                    >
+                      ]}>
                       <Ionicons
                         name={CATEGORY_ICONS[cat]}
                         size={16}
@@ -205,8 +212,7 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
                       />
                       <ThemedText
                         className="text-[13px] font-semibold"
-                        style={{ color: selected ? '#fff' : (isDark ? '#E8E9ED' : '#1A1B1F') }}
-                      >
+                        style={{ color: selected ? '#fff' : isDark ? '#E8E9ED' : '#1A1B1F' }}>
                         {t(CATEGORY_KEYS[cat])}
                       </ThemedText>
                     </Pressable>
@@ -244,20 +250,18 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
                         paddingVertical: 12,
                         borderRadius: 14,
                         borderWidth: 1.5,
-                        backgroundColor: selected ? color + '18' : (isDark ? '#22252A' : '#F5F6FA'),
-                        borderColor: selected ? color : (isDark ? '#2D3038' : '#EBEBEF'),
+                        backgroundColor: selected ? color + '18' : isDark ? '#22252A' : '#F5F6FA',
+                        borderColor: selected ? color : isDark ? '#2D3038' : '#EBEBEF',
                       },
-                    ]}
-                  >
+                    ]}>
                     <Ionicons
                       name={PRIORITY_ICONS[p]}
                       size={18}
-                      color={selected ? color : (isDark ? '#7A7E87' : '#8E919A')}
+                      color={selected ? color : isDark ? '#7A7E87' : '#8E919A'}
                     />
                     <ThemedText
                       className="text-xs font-bold"
-                      style={{ color: selected ? color : (isDark ? '#E8E9ED' : '#1A1B1F') }}
-                    >
+                      style={{ color: selected ? color : isDark ? '#E8E9ED' : '#1A1B1F' }}>
                       {t(PRIORITY_KEYS[p])}
                     </ThemedText>
                     {selected && (
@@ -276,8 +280,7 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
           <View className="flex-row gap-2.5 mt-6">
             <Pressable
               onPress={handleClose}
-              className="flex-1 flex-row items-center justify-center gap-1.5 py-3.5 rounded-[14px] border bg-app-surface dark:bg-app-surface-dark border-app-border dark:border-app-border-dark"
-            >
+              className="flex-1 flex-row items-center justify-center gap-1.5 py-3.5 rounded-[14px] border bg-app-surface dark:bg-app-surface-dark border-app-border dark:border-app-border-dark">
               <Ionicons name="close-outline" size={20} color={isDark ? '#7A7E87' : '#8E919A'} />
               <ThemedText className="text-[15px] font-semibold text-app-text-secondary dark:text-app-text-secondary-dark">
                 {t('cancel')}
@@ -291,14 +294,12 @@ export function AddTodoModal({ visible, onClose, onAdd }: Props) {
                 { flex: 2, borderRadius: 14, overflow: 'hidden' },
                 !title.trim() && { opacity: 0.35 },
                 addBtnStyle,
-              ]}
-            >
+              ]}>
               <LinearGradient
                 colors={['#6C5CE7', '#A29BFE']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                className="flex-row items-center justify-center gap-2 py-3.5 rounded-[14px]"
-              >
+                className="flex-row items-center justify-center gap-2 py-3.5 rounded-[14px]">
                 <Ionicons name="add-circle-outline" size={20} color="#fff" />
                 <Animated.Text className="text-[15px] font-bold text-white">
                   {t('add')}

@@ -34,10 +34,11 @@ export function useResponsive() {
   const isTablet = width >= 768;
   const isShortDevice = height < 700;
 
-  const tabBarHeight = Platform.select({
-    ios: isSmallDevice ? 55 : 60,
-    default: isSmallDevice ? 56 : 62,
-  }) ?? 60;
+  const tabBarHeight =
+    Platform.select({
+      ios: isSmallDevice ? 55 : 60,
+      default: isSmallDevice ? 56 : 62,
+    }) ?? 60;
 
   return {
     width,

@@ -16,7 +16,7 @@ describe('useAuthStore', () => {
   });
 
   describe('signUp', () => {
-    it('yangi foydalanuvchi ro\'yxatdan o\'tishi kerak', async () => {
+    it("yangi foydalanuvchi ro'yxatdan o'tishi kerak", async () => {
       const { signUp } = useAuthStore.getState();
       const result = await signUp('test@mail.com', 'password123', t);
 
@@ -26,7 +26,7 @@ describe('useAuthStore', () => {
       expect(user!.email).toBe('test@mail.com');
     });
 
-    it('bo\'sh email bilan xatolik qaytarishi kerak', async () => {
+    it("bo'sh email bilan xatolik qaytarishi kerak", async () => {
       const { signUp } = useAuthStore.getState();
       const result = await signUp('', 'password123', t);
 
@@ -34,14 +34,14 @@ describe('useAuthStore', () => {
       expect(useAuthStore.getState().user).toBeNull();
     });
 
-    it('noto\'g\'ri email formati bilan xatolik qaytarishi kerak', async () => {
+    it("noto'g'ri email formati bilan xatolik qaytarishi kerak", async () => {
       const { signUp } = useAuthStore.getState();
       const result = await signUp('invalid-email', 'password123', t);
 
       expect(result.error).toBe('validationEmailInvalid');
     });
 
-    it('bo\'sh parol bilan xatolik qaytarishi kerak', async () => {
+    it("bo'sh parol bilan xatolik qaytarishi kerak", async () => {
       const { signUp } = useAuthStore.getState();
       const result = await signUp('test@mail.com', '', t);
 
@@ -64,7 +64,7 @@ describe('useAuthStore', () => {
       expect(result.error).toBe('emailAlreadyRegistered');
     });
 
-    it('email case-insensitive bo\'lishi kerak', async () => {
+    it("email case-insensitive bo'lishi kerak", async () => {
       const { signUp } = useAuthStore.getState();
       await signUp('Test@Mail.com', 'password123', t);
       resetStore();
@@ -80,7 +80,7 @@ describe('useAuthStore', () => {
       resetStore();
     });
 
-    it('to\'g\'ri ma\'lumotlar bilan kirishi kerak', async () => {
+    it("to'g'ri ma'lumotlar bilan kirishi kerak", async () => {
       const result = await useAuthStore.getState().signIn('user@test.com', 'mypassword', t);
 
       expect(result.error).toBeNull();
@@ -88,24 +88,24 @@ describe('useAuthStore', () => {
       expect(useAuthStore.getState().user!.email).toBe('user@test.com');
     });
 
-    it('mavjud bo\'lmagan email bilan xatolik qaytarishi kerak', async () => {
+    it("mavjud bo'lmagan email bilan xatolik qaytarishi kerak", async () => {
       const result = await useAuthStore.getState().signIn('nobody@test.com', 'mypassword', t);
 
       expect(result.error).toBe('userNotFound');
     });
 
-    it('noto\'g\'ri parol bilan xatolik qaytarishi kerak', async () => {
+    it("noto'g'ri parol bilan xatolik qaytarishi kerak", async () => {
       const result = await useAuthStore.getState().signIn('user@test.com', 'wrongpassword', t);
 
       expect(result.error).toBe('wrongPassword');
     });
 
-    it('bo\'sh email bilan validatsiya xatoligi qaytarishi kerak', async () => {
+    it("bo'sh email bilan validatsiya xatoligi qaytarishi kerak", async () => {
       const result = await useAuthStore.getState().signIn('', 'password', t);
       expect(result.error).toBe('validationEmailRequired');
     });
 
-    it('noto\'g\'ri email formati bilan xatolik qaytarishi kerak', async () => {
+    it("noto'g'ri email formati bilan xatolik qaytarishi kerak", async () => {
       const result = await useAuthStore.getState().signIn('bad-email', 'password', t);
       expect(result.error).toBe('validationEmailInvalid');
     });
@@ -139,7 +139,7 @@ describe('useAuthStore', () => {
       expect(initialized).toBe(true);
     });
 
-    it('foydalanuvchi bo\'lmasa initialized true bo\'lishi kerak', async () => {
+    it("foydalanuvchi bo'lmasa initialized true bo'lishi kerak", async () => {
       await useAuthStore.getState().initialize();
 
       const { user, initialized } = useAuthStore.getState();

@@ -40,7 +40,11 @@ export default function TabLayout() {
         options={{
           title: t('myTasks'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'clipboard' : 'clipboard-outline'} size={iconSize} color={color} />
+            <Ionicons
+              name={focused ? 'clipboard' : 'clipboard-outline'}
+              size={iconSize}
+              color={color}
+            />
           ),
         }}
       />
@@ -49,7 +53,11 @@ export default function TabLayout() {
         options={{
           title: t('statistics'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'stats-chart' : 'stats-chart-outline'} size={iconSize} color={color} />
+            <Ionicons
+              name={focused ? 'stats-chart' : 'stats-chart-outline'}
+              size={iconSize}
+              color={color}
+            />
           ),
         }}
       />
@@ -58,7 +66,11 @@ export default function TabLayout() {
         options={{
           title: t('profile'),
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'settings' : 'settings-outline'} size={iconSize} color={color} />
+            <Ionicons
+              name={focused ? 'settings' : 'settings-outline'}
+              size={iconSize}
+              color={color}
+            />
           ),
         }}
       />

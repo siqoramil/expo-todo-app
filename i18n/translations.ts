@@ -33,15 +33,15 @@ export const translations = {
 
     // Empty state
     noTasks: "Vazifalar yo'q",
-    noTasksHint: "Yangi vazifa qo'shish uchun\npastdagi \"+\" tugmasini bosing",
+    noTasksHint: 'Yangi vazifa qo\'shish uchun\npastdagi "+" tugmasini bosing',
 
     // Actions
     edit: 'Tahrirlash',
     delete: "O'chirish",
     editTask: 'Vazifani tahrirlash',
-    deleteConfirm: 'Haqiqatan ham bu vazifani o\'chirishni xohlaysizmi?',
+    deleteConfirm: "Haqiqatan ham bu vazifani o'chirishni xohlaysizmi?",
     yes: 'Ha',
-    no: 'Yo\'q',
+    no: "Yo'q",
 
     // Time
     now: 'Hozir',
@@ -68,9 +68,9 @@ export const translations = {
     // Settings
     settings: 'Sozlamalar',
     settingsSubtitle: 'Ilova sozlamalari',
-    appearance: 'Ko\'rinish',
-    lightTheme: 'Yorug\'',
-    darkTheme: 'Qorong\'u',
+    appearance: "Ko'rinish",
+    lightTheme: "Yorug'",
+    darkTheme: "Qorong'u",
     systemTheme: 'Tizim',
     language: 'Til',
     uzbek: "O'zbekcha",
@@ -78,7 +78,7 @@ export const translations = {
 
     // Profile
     profile: 'Profil',
-    profileSubtitle: 'Shaxsiy ma\'lumotlaringiz',
+    profileSubtitle: "Shaxsiy ma'lumotlaringiz",
     firstName: 'Ism',
     lastName: 'Familiya',
     email: 'Email',
@@ -87,8 +87,8 @@ export const translations = {
     emailPlaceholder: 'Email manzilingiz',
     save: 'Saqlash',
     saved: 'Saqlandi!',
-    changePhoto: 'Rasmni o\'zgartirish',
-    personalInfo: 'Shaxsiy ma\'lumotlar',
+    changePhoto: "Rasmni o'zgartirish",
+    personalInfo: "Shaxsiy ma'lumotlar",
 
     // Auth
     login: 'Kirish',
@@ -110,7 +110,7 @@ export const translations = {
     validationEmailRequired: 'Email kiritish shart',
     validationEmailInvalid: "Email formati noto'g'ri",
     validationPasswordRequired: 'Parol kiritish shart',
-    validationPasswordMin: 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak',
+    validationPasswordMin: "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
     userNotFound: 'Foydalanuvchi topilmadi',
     wrongPassword: "Parol noto'g'ri",
     emailAlreadyRegistered: "Bu email allaqachon ro'yxatdan o'tgan",

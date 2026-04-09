@@ -71,13 +71,11 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
     <Modal visible={visible} transparent animationType="slide" onRequestClose={handleClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 justify-end"
-      >
+        className="flex-1 justify-end">
         <Pressable className="absolute inset-0 bg-black/50" onPress={handleClose} />
         <View
           className="rounded-t-[28px] px-6 pt-3 bg-white dark:bg-[#1E2022]"
-          style={{ paddingBottom: Platform.OS === 'ios' ? 40 : 24 }}
-        >
+          style={{ paddingBottom: Platform.OS === 'ios' ? 40 : 24 }}>
           <View className="w-10 h-1 rounded-full bg-[#D1D5DB] dark:bg-[#444] self-center mb-5" />
           <ThemedText className="text-[22px] font-bold mb-5">{t('editTask')}</ThemedText>
 
@@ -108,12 +106,9 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
                       Haptics.selectionAsync();
                     }}
                     className="px-3.5 py-2 rounded-xl border-[1.5px]"
-                    style={[
-                      { borderColor: color },
-                      selected && { backgroundColor: color },
-                    ]}
-                  >
-                    <ThemedText className={`text-[13px] font-semibold ${selected ? 'text-white' : ''}`}>
+                    style={[{ borderColor: color }, selected && { backgroundColor: color }]}>
+                    <ThemedText
+                      className={`text-[13px] font-semibold ${selected ? 'text-white' : ''}`}>
                       {CATEGORY_EMOJI[cat]} {t(CATEGORY_KEYS[cat])}
                     </ThemedText>
                   </Pressable>
@@ -137,11 +132,7 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
                     Haptics.selectionAsync();
                   }}
                   className="flex-1 py-2.5 rounded-xl border-[1.5px] items-center"
-                  style={[
-                    { borderColor: color },
-                    selected && { backgroundColor: color },
-                  ]}
-                >
+                  style={[{ borderColor: color }, selected && { backgroundColor: color }]}>
                   <ThemedText className={`text-[13px] font-bold ${selected ? 'text-white' : ''}`}>
                     {t(PRIORITY_KEYS[p])}
                   </ThemedText>
@@ -153,8 +144,7 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
           <View className="flex-row gap-3 mt-7">
             <Pressable
               onPress={handleClose}
-              className="flex-1 py-4 rounded-[14px] items-center bg-[#F3F4F6] dark:bg-[#2A2D30]"
-            >
+              className="flex-1 py-4 rounded-[14px] items-center bg-[#F3F4F6] dark:bg-[#2A2D30]">
               <ThemedText className="text-base font-semibold text-[#6B7280] dark:text-[#9BA1A6]">
                 {t('cancel')}
               </ThemedText>
@@ -162,11 +152,8 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
             <Pressable
               onPress={handleSave}
               className={`flex-[2] py-4 rounded-[14px] items-center bg-[#6C5CE7] ${!title.trim() ? 'opacity-40' : ''}`}
-              disabled={!title.trim()}
-            >
-              <Text className="text-base font-bold text-white">
-                {t('save')}
-              </Text>
+              disabled={!title.trim()}>
+              <Text className="text-base font-bold text-white">{t('save')}</Text>
             </Pressable>
           </View>
         </View>
@@ -174,4 +161,3 @@ export function EditTodoModal({ visible, todo, onClose, onSave }: Props) {
     </Modal>
   );
 }
-

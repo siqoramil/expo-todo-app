@@ -10,7 +10,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const AnimatedView = Animated.View;
 
@@ -118,36 +117,41 @@ export function AuthInput({
       entering={FadeInDown.delay(delay).duration(450).springify()}
       style={[
         {
-          borderRadius: 18, borderWidth: 1.5,
+          borderRadius: 18,
+          borderWidth: 1.5,
           backgroundColor: isDark ? '#14171E' : '#FAFAFD',
           shadowColor: accentColor,
           shadowOffset: { width: 0, height: 4 },
           elevation: focused ? 6 : 1,
         },
         containerStyle,
-      ]}
-    >
+      ]}>
       {/* Inner content */}
-      <View style={{
-        flexDirection: 'row', alignItems: 'center',
-        paddingLeft: 14, paddingRight: 14,
-        minHeight: 58,
-      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingLeft: 14,
+          paddingRight: 14,
+          minHeight: 58,
+        }}>
         {/* Animated icon with background */}
         <AnimatedView
           style={[
             {
-              width: 36, height: 36, borderRadius: 10,
-              alignItems: 'center', justifyContent: 'center',
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
               marginRight: 12,
             },
             iconBgStyle,
-          ]}
-        >
+          ]}>
           <Ionicons
             name={icon}
             size={18}
-            color={focused ? accentColor : (isDark ? '#5A5E6A' : '#9CA3AF')}
+            color={focused ? accentColor : isDark ? '#5A5E6A' : '#9CA3AF'}
           />
         </AnimatedView>
 
@@ -158,21 +162,21 @@ export function AuthInput({
             style={[
               {
                 position: 'absolute',
-                left: -4, top: 18,
+                left: -4,
+                top: 18,
                 pointerEvents: 'none',
                 zIndex: 10,
               },
               labelStyle,
-            ]}
-          >
+            ]}>
             <Animated.Text
               style={{
-                fontSize: 13, fontWeight: '600',
-                color: focused ? accentColor : (isDark ? '#5A5E6A' : '#9CA3AF'),
+                fontSize: 13,
+                fontWeight: '600',
+                color: focused ? accentColor : isDark ? '#5A5E6A' : '#9CA3AF',
                 backgroundColor: isDark ? '#14171E' : '#FAFAFD',
                 paddingHorizontal: 4,
-              }}
-            >
+              }}>
               {label}
             </Animated.Text>
           </AnimatedView>
@@ -180,7 +184,8 @@ export function AuthInput({
           {/* Text input */}
           <TextInput
             style={{
-              fontSize: 15, fontWeight: '500',
+              fontSize: 15,
+              fontWeight: '500',
               color: isDark ? '#ECEDF2' : '#1A1B1F',
               paddingVertical: 6,
               paddingTop: isActive ? 14 : 6,
@@ -204,12 +209,14 @@ export function AuthInput({
             onPress={() => setShowPassword(!showPassword)}
             hitSlop={12}
             style={{
-              width: 36, height: 36, borderRadius: 10,
-              alignItems: 'center', justifyContent: 'center',
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
               backgroundColor: isDark ? '#1E2028' : '#EEF0F6',
               marginLeft: 8,
-            }}
-          >
+            }}>
             <Ionicons
               name={showPassword ? 'eye-off' : 'eye'}
               size={18}
@@ -221,12 +228,14 @@ export function AuthInput({
             <Animated.View
               entering={FadeInDown.duration(200)}
               style={{
-                width: 24, height: 24, borderRadius: 12,
-                alignItems: 'center', justifyContent: 'center',
+                width: 24,
+                height: 24,
+                borderRadius: 12,
+                alignItems: 'center',
+                justifyContent: 'center',
                 backgroundColor: accentColor + '18',
                 marginLeft: 8,
-              }}
-            >
+              }}>
               <Ionicons name="checkmark" size={14} color={accentColor} />
             </Animated.View>
           )
@@ -234,13 +243,26 @@ export function AuthInput({
       </View>
 
       {/* Bottom glow line */}
-      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, overflow: 'hidden', borderBottomLeftRadius: 18, borderBottomRightRadius: 18 }}>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 2,
+          overflow: 'hidden',
+          borderBottomLeftRadius: 18,
+          borderBottomRightRadius: 18,
+        }}>
         <AnimatedView
           style={[
             {
-              position: 'absolute', bottom: 0,
-              left: '10%', right: '10%',
-              height: 2, borderRadius: 1,
+              position: 'absolute',
+              bottom: 0,
+              left: '10%',
+              right: '10%',
+              height: 2,
+              borderRadius: 1,
               backgroundColor: accentColor,
             },
             glowStyle,

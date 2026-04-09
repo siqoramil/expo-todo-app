@@ -1,5 +1,5 @@
-import "../global.css";
-import "../lib/nativewind-interop";
+import '../global.css';
+import '../lib/nativewind-interop';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';

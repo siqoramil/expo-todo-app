@@ -43,11 +43,7 @@ const DEFAULT_PROFILE: UserProfile = {
 
 /** Pure selector — reads from state snapshot `s`, not `get()`. Safe with useSyncExternalStore. */
 export const selectEffectiveTheme = (s: AppState): 'light' | 'dark' =>
-  s.themeMode === 'system'
-    ? s.systemColorScheme === 'dark'
-      ? 'dark'
-      : 'light'
-    : s.themeMode;
+  s.themeMode === 'system' ? (s.systemColorScheme === 'dark' ? 'dark' : 'light') : s.themeMode;
 
 export const useAppStore = create<AppState>((set, get) => ({
   language: 'uz',
@@ -99,11 +95,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   effectiveTheme: () => {
     const { themeMode, systemColorScheme } = get();
-    return themeMode === 'system'
-      ? systemColorScheme === 'dark'
-        ? 'dark'
-        : 'light'
-      : themeMode;
+    return themeMode === 'system' ? (systemColorScheme === 'dark' ? 'dark' : 'light') : themeMode;
   },
 
   init: async () => {
@@ -113,10 +105,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     ]);
     set({
       language: lang === 'uz' || lang === 'ru' || lang === 'en' ? lang : 'uz',
-      themeMode:
-        theme === 'light' || theme === 'dark' || theme === 'system'
-          ? theme
-          : 'system',
+      themeMode: theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system',
       loaded: true,
     });
   },

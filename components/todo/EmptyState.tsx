@@ -13,8 +13,7 @@ export function EmptyState() {
   return (
     <Animated.View
       entering={FadeIn.delay(200).duration(500)}
-      className="flex-1 items-center justify-center py-20 px-10"
-    >
+      className="flex-1 items-center justify-center py-20 px-10">
       <View className="w-20 h-20 rounded-3xl bg-[#6C5CE715] dark:bg-[#A29BFE15] items-center justify-center mb-5">
         <Ionicons name="clipboard-outline" size={36} color={isDark ? '#A29BFE' : '#6C5CE7'} />
       </View>
